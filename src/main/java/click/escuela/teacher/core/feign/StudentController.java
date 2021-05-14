@@ -16,5 +16,4 @@ public interface StudentController {
 	public StudentDTO getById(@PathVariable("schoolId") String schoolId, @PathVariable("studentId") String studentId,
 			@RequestParam("fullDetail") Boolean fullDetail) throws TransactionException;
 
-
 }
