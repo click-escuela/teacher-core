@@ -1,6 +1,6 @@
 package click.escuela.teacher.core.enumerator;
 
-public enum GradeEnum {
+public enum GradeMessage {
 
 	CREATE_OK("CREATE_OK", "Se creó la nota correctamente"),
 	CREATE_ERROR("CREATE_ERROR", "No se pudo crear la nota correctamente"),
@@ -9,7 +9,7 @@ public enum GradeEnum {
 	private String code;
 	private String description;
 
-	GradeEnum(String code, String description) {
+	GradeMessage(String code, String description) {
 		this.code = code;
 		this.description = description;
 	}

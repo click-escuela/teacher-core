@@ -16,7 +16,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.connector.GradeConnector;
-import click.escuela.teacher.core.enumerator.GradeEnum;
+import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
 import click.escuela.teacher.core.enumerator.StudentEnum;
 import click.escuela.teacher.core.exception.TransactionException;
@@ -60,26 +60,38 @@ public class GradeConnectorTest {
 	}
 
 	@Test
-	public void whenCreateIsErrorByStudent() throws TransactionException {
+	public void whenCreateIsError() throws TransactionException {
 
-		when(studentController.getById(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new TransactionException(
-				StudentEnum.CREATE_ERROR.getCode(), StudentEnum.CREATE_ERROR.getDescription()));
+		when(gradeController.create(Mockito.any(), Mockito.any())).thenThrow(new TransactionException(
+				GradeMessage.CREATE_ERROR.getCode(), GradeMessage.CREATE_ERROR.getDescription()));
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 
 			gradeConnector.create(schoolId, gradeApi);
-		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
+		}).withMessage(GradeMessage.CREATE_ERROR.getDescription());
 	}
 
 	@Test
-	public void whenCreateIsErrorByGrade() throws TransactionException {
+	public void whenGetByIdIsOk() {
+		boolean hasError = false;
 
-		when(gradeController.create(Mockito.any(), Mockito.any())).thenThrow(
-				new TransactionException(GradeEnum.CREATE_ERROR.getCode(), GradeEnum.CREATE_ERROR.getDescription()));
+		try {
+			gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByIdIsError() throws TransactionException {
+
+		when(studentController.getById(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+				.thenThrow(new TransactionException(StudentEnum.CREATE_ERROR.getCode(),
+						StudentEnum.CREATE_ERROR.getDescription()));
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 
-			gradeConnector.create(schoolId, gradeApi);
-		}).withMessage(GradeEnum.CREATE_ERROR.getDescription());
+			gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
+		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
 	}
 }

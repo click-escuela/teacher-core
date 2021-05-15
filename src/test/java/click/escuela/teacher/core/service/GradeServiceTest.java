@@ -17,8 +17,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.connector.GradeConnector;
-import click.escuela.teacher.core.enumerator.GradeEnum;
+import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
+import click.escuela.teacher.core.enumerator.StudentEnum;
 import click.escuela.teacher.core.exception.TransactionException;
 import click.escuela.teacher.core.service.impl.GradeServiceImpl;
 
@@ -62,12 +63,24 @@ public class GradeServiceTest {
 
 	@Test
 	public void whenCreateIsError() throws TransactionException {
-		doThrow(new TransactionException(GradeEnum.CREATE_ERROR.getCode(), GradeEnum.CREATE_ERROR.getDescription()))
-				.when(gradeConnector).create(Mockito.anyString(), Mockito.any());
+		doThrow(new TransactionException(GradeMessage.CREATE_ERROR.getCode(),
+				GradeMessage.CREATE_ERROR.getDescription())).when(gradeConnector).create(Mockito.anyString(),
+						Mockito.any());
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 			gradeService.create(schoolId, gradeApi);
-		}).withMessage(GradeEnum.CREATE_ERROR.getDescription());
+		}).withMessage(GradeMessage.CREATE_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenCreateIsErrorByStudent() throws TransactionException {
+		doThrow(new TransactionException(StudentEnum.CREATE_ERROR.getCode(), StudentEnum.CREATE_ERROR.getDescription()))
+				.when(gradeConnector).getById(Mockito.any(), Mockito.any(), Mockito.anyBoolean());
+
+		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
+			gradeService.create(schoolId, gradeApi);
+		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
+
 	}
 
 }

@@ -18,8 +18,11 @@ public class GradeConnector {
 	private GradeController gradeController;
 
 	public void create(String schoolId, GradeApi gradeApi) throws TransactionException {
-		studentController.getById(schoolId, gradeApi.getStudentId(), false);
 		gradeController.create(schoolId, gradeApi);
+	}
+
+	public void getById(String schoolId, String studentId, Boolean fullDetail) throws TransactionException {
+		studentController.getById(schoolId, studentId, fullDetail);
 	}
 
 }
