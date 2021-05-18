@@ -1,8 +1,10 @@
-package click.escuela.teacher.core.service;
+package click.escuela.teacher.core.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.UUID;
@@ -48,6 +50,7 @@ public class GradeControllerTest {
 	
 	private ObjectMapper mapper;
 	private GradeApi gradeApi;
+	private String id;
 	private String schoolId;
 	private String studentId;
 	private String courseId;
@@ -62,11 +65,13 @@ public class GradeControllerTest {
 		
 		ReflectionTestUtils.setField(gradeController, "gradeService", gradeService);
 		
-		schoolId = UUID.randomUUID().toString();
+		id = UUID.randomUUID().toString();
+		schoolId = "1234";
 		studentId = UUID.randomUUID().toString();
 		courseId = UUID.randomUUID().toString();
-		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").type(GradeType.HOMEWORK.toString())
-				.number(10).studentId(studentId).courseId(courseId).build();
+		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").studentId(studentId)
+				.type(GradeType.HOMEWORK.toString()).courseId(courseId).schoolId(Integer.valueOf(schoolId)).number(10)
+				.build();
 
 		doNothing().when(gradeService).create(Mockito.anyString(), Mockito.any());
 		
@@ -163,6 +168,43 @@ public class GradeControllerTest {
 		assertThat(response).contains("Number cannot be null");
 
 	}
+	
+	@Test
+	public void whenCreateButSchoolNull() throws JsonProcessingException, Exception {
+
+		gradeApi.setSchoolId(null);
+		MvcResult result = mockMvc.perform(post("/school/{schoolId}/grade", schoolId)
+				.contentType(MediaType.APPLICATION_JSON).content(toJson(gradeApi))).andExpect(status().isBadRequest())
+				.andReturn();
+		String response = result.getResponse().getContentAsString();
+		assertThat(response).contains("School cannot be null");
+
+	}
+	@Test
+	public void whenUpdateOk() throws JsonProcessingException, Exception {
+
+		gradeApi.setId(id);
+		MvcResult result = mockMvc.perform(put("/school/{schoolId}/grade", schoolId)
+				.contentType(MediaType.APPLICATION_JSON).content(toJson(gradeApi)))
+				.andExpect(status().is2xxSuccessful()).andReturn();
+		String response = result.getResponse().getContentAsString();
+		assertThat(response).contains(GradeMessage.UPDATE_OK.name());
+
+	}
+
+	@Test
+	public void whenUpdateError() throws JsonProcessingException, Exception {
+		doThrow(new TransactionException(GradeMessage.UPDATE_ERROR.getCode(),
+				GradeMessage.UPDATE_ERROR.getDescription())).when(gradeService).update(Mockito.anyString(),Mockito.any());
+
+		gradeApi.setId(id);
+		MvcResult result = mockMvc.perform(put("/school/{schoolId}/grade", schoolId)
+				.contentType(MediaType.APPLICATION_JSON).content(toJson(gradeApi))).andExpect(status().isBadRequest())
+				.andReturn();
+		String response = result.getResponse().getContentAsString();
+		assertThat(response).contains(GradeMessage.UPDATE_ERROR.getDescription());
+	}
+	
 
 	private String toJson(final Object obj) throws JsonProcessingException {
 		return mapper.writeValueAsString(obj);

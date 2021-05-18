@@ -31,20 +31,23 @@ public class GradeServiceTest {
 
 	private GradeServiceImpl gradeService = new GradeServiceImpl();
 	private GradeApi gradeApi;
-	private String schoolId;
-	private String studentId;
-	private String courseId;
+	private UUID id;
+	private UUID studentId;
+	private UUID courseId;
+	private Integer schoolId;
 
 	@Before
 	public void setUp() throws TransactionException {
 
-		schoolId = UUID.randomUUID().toString();
-		studentId = UUID.randomUUID().toString();
-		courseId = UUID.randomUUID().toString();
-		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").type(GradeType.HOMEWORK.toString())
-				.number(10).studentId(studentId).courseId(courseId).build();
+		id = UUID.randomUUID();
+		studentId = UUID.randomUUID();
+		courseId = UUID.randomUUID();
+		schoolId = 1234;
+		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").studentId(studentId.toString())
+				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).number(10)
+				.build();
 
-		doNothing().when(gradeConnector).create(schoolId, gradeApi);
+		doNothing().when(gradeConnector).create(schoolId.toString(), gradeApi);
 
 		ReflectionTestUtils.setField(gradeService, "gradeConnector", gradeConnector);
 
@@ -54,7 +57,7 @@ public class GradeServiceTest {
 	public void whenCreateIsOk() {
 		boolean hasError = false;
 		try {
-			gradeService.create(schoolId, gradeApi);
+			gradeService.create(schoolId.toString(), gradeApi);
 		} catch (Exception e) {
 			hasError = true;
 		}
@@ -68,8 +71,33 @@ public class GradeServiceTest {
 						Mockito.any());
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
-			gradeService.create(schoolId, gradeApi);
+			gradeService.create(schoolId.toString(), gradeApi);
 		}).withMessage(GradeMessage.CREATE_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenUpdateIsOk() {
+		boolean hasError = false;
+		try {
+			gradeApi.setId(id.toString());
+			gradeService.update(schoolId.toString(), gradeApi);
+		} catch (Exception e) {
+			hasError = true;
+		}
+		assertThat(hasError).isFalse();
+	}
+
+	@Test
+	public void whenUpdateIsError() throws TransactionException {
+		id = UUID.randomUUID();
+
+		doThrow(new TransactionException(GradeMessage.UPDATE_ERROR.getCode(),
+				GradeMessage.UPDATE_ERROR.getDescription())).when(gradeConnector).update(Mockito.any(), Mockito.any());
+
+		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
+			gradeApi.setId(id.toString());
+			gradeService.update(schoolId.toString(), gradeApi);
+		}).withMessage(GradeMessage.UPDATE_ERROR.getDescription());
 	}
 
 	@Test
@@ -78,7 +106,7 @@ public class GradeServiceTest {
 				.when(gradeConnector).getById(Mockito.any(), Mockito.any(), Mockito.anyBoolean());
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
-			gradeService.create(schoolId, gradeApi);
+			gradeService.create(schoolId.toString(), gradeApi);
 		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
 
 	}

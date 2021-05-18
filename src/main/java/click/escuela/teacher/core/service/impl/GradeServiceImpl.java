@@ -19,6 +19,7 @@ public class GradeServiceImpl {
 	}
 
 	public void update(String schoolId, GradeApi gradeApi) throws TransactionException {
+		gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
 		gradeConnector.update(schoolId, gradeApi);
 	}
 }
