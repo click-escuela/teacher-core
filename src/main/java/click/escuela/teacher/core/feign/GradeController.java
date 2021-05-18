@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import click.escuela.teacher.core.api.GradeApi;
@@ -17,6 +18,10 @@ public interface GradeController {
 	// GradeController
 	@PostMapping(value = "/click-escuela/school/{schoolId}/grade")
 	public ResponseEntity<GradeMessage> create(@PathVariable("schoolId") String schoolId,
+			@RequestBody @Validated GradeApi gradeApi) throws TransactionException;
+
+	@PutMapping(value = "/click-escuela/school/{schoolId}/grade")
+	public ResponseEntity<GradeMessage> update(@PathVariable("schoolId") String schoolId,
 			@RequestBody @Validated GradeApi gradeApi) throws TransactionException;
 
 }
