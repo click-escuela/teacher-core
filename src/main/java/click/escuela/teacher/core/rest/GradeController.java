@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,10 +29,19 @@ public class GradeController {
 
 	@Operation(summary = "Create grade", responses = {
 			@ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json")) })
-	@PostMapping(value = "", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<GradeMessage> create(@PathVariable("schoolId") String schoolId,
 			@RequestBody @Validated GradeApi gradeApi) throws TransactionException {
 		gradeService.create(schoolId, gradeApi);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(GradeMessage.CREATE_OK);
+	}
+
+	@Operation(summary = "Update grade", responses = {
+			@ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json")) })
+	@PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<GradeMessage> update(@PathVariable("schoolId") String schoolId,
+			@RequestBody @Validated GradeApi gradeApi) throws TransactionException {
+		gradeService.update(schoolId, gradeApi);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(GradeMessage.UPDATE_OK);
 	}
 }

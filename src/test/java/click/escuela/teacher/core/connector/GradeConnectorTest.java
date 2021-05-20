@@ -1,4 +1,4 @@
-package click.escuela.teacher.core.service;
+package click.escuela.teacher.core.connector;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -34,17 +34,23 @@ public class GradeConnectorTest {
 
 	private GradeConnector gradeConnector = new GradeConnector();
 	private GradeApi gradeApi;
-	private String schoolId;
+	private UUID id;
+	private UUID studentId;
+	private UUID courseId;
+	private Integer schoolId;
 
 	@Before
 	public void setUp() throws TransactionException {
-		schoolId = UUID.randomUUID().toString();
-
-		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").type(GradeType.HOMEWORK.toString())
-				.number(10).build();
+		
+		id = UUID.randomUUID();
+		studentId = UUID.randomUUID();
+		courseId = UUID.randomUUID();
+		schoolId = 1234;
+		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").studentId(studentId.toString())
+				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).number(10)
+				.build();
 
 		ReflectionTestUtils.setField(gradeConnector, "studentController", studentController);
-
 		ReflectionTestUtils.setField(gradeConnector, "gradeController", gradeController);
 	}
 
@@ -53,7 +59,7 @@ public class GradeConnectorTest {
 		boolean hasError = false;
 
 		try {
-			gradeConnector.create(schoolId, gradeApi);
+			gradeConnector.create(schoolId.toString(), gradeApi);
 		} catch (Exception e) {
 			assertThat(hasError).isFalse();
 		}
@@ -66,9 +72,33 @@ public class GradeConnectorTest {
 				GradeMessage.CREATE_ERROR.getCode(), GradeMessage.CREATE_ERROR.getDescription()));
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
-
-			gradeConnector.create(schoolId, gradeApi);
+			gradeConnector.create(schoolId.toString(), gradeApi);
 		}).withMessage(GradeMessage.CREATE_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenUpdateIsOk() {
+		boolean hasError = false;
+		try {
+			gradeApi.setId(id.toString());
+			gradeConnector.update(schoolId.toString(), gradeApi);
+		} catch (Exception e) {
+			hasError = true;
+		}
+		assertThat(hasError).isFalse();
+	}
+
+	@Test
+	public void whenUpdateIsError() throws TransactionException {
+		id = UUID.randomUUID();
+
+		when(gradeController.update(Mockito.any(), Mockito.any())).thenThrow(new TransactionException(
+				GradeMessage.UPDATE_ERROR.getCode(), GradeMessage.UPDATE_ERROR.getDescription()));
+
+		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
+			gradeApi.setId(id.toString());
+			gradeConnector.update(schoolId.toString(), gradeApi);
+		}).withMessage(GradeMessage.UPDATE_ERROR.getDescription());
 	}
 
 	@Test
@@ -76,7 +106,7 @@ public class GradeConnectorTest {
 		boolean hasError = false;
 
 		try {
-			gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
+			gradeConnector.getById(schoolId.toString(), gradeApi.getStudentId(), false);
 		} catch (Exception e) {
 			assertThat(hasError).isFalse();
 		}
@@ -90,8 +120,7 @@ public class GradeConnectorTest {
 						StudentEnum.CREATE_ERROR.getDescription()));
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
-
-			gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
+			gradeConnector.getById(schoolId.toString(), gradeApi.getStudentId(), false);
 		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
 	}
 }
