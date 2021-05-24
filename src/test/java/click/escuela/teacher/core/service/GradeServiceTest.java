@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -109,6 +111,96 @@ public class GradeServiceTest {
 			gradeService.create(schoolId.toString(), gradeApi);
 		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
 
+	}
+
+	@Test
+	public void whenGetByIsOk() {
+		boolean hasError = false;
+		try {
+			gradeService.getById(schoolId.toString(), id.toString());
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByIdIsError() throws TransactionException {
+
+		when(gradeService.getById(Mockito.any(), Mockito.any())).thenThrow(
+				new TransactionException(GradeMessage.GET_ERROR.getCode(), GradeMessage.GET_ERROR.getDescription()));
+
+		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
+			gradeService.getById(schoolId.toString(), id.toString());
+		}).withMessage(GradeMessage.GET_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenGetBySchoolIsOk() {
+		boolean hasError = false;
+		try {
+			gradeService.getBySchoolId(schoolId.toString());
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetBySchoolIsEmpty() {
+		boolean hasEmpty = false;
+
+		when(gradeService.getBySchoolId(Mockito.any())).thenReturn(new ArrayList<>());
+		try {
+			if (gradeService.getBySchoolId(schoolId.toString()).isEmpty())
+				;
+		} catch (Exception e) {
+			assertThat(hasEmpty).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByStudentIsOk() {
+		boolean hasError = false;
+		try {
+			gradeService.getByStudentId(schoolId.toString(), studentId.toString());
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByStudentIsEmpty() {
+		boolean hasEmpty = false;
+		when(gradeService.getByStudentId(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+
+		try {
+			if (gradeService.getByStudentId(schoolId.toString(), studentId.toString()).isEmpty())
+				;
+		} catch (Exception e) {
+			assertThat(hasEmpty).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByCourseIsOk() {
+		boolean hasError = false;
+		try {
+			gradeService.getByCourseId(schoolId.toString(), courseId.toString());
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByCourseIsEmpty() {
+		boolean hasEmpty = false;
+		when(gradeService.getByCourseId(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+
+		try {
+			if (gradeService.getByCourseId(courseId.toString(), courseId.toString()).isEmpty())
+				;
+		} catch (Exception e) {
+			assertThat(hasEmpty).isFalse();
+		}
 	}
 
 }
