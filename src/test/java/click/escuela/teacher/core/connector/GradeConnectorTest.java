@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -41,7 +42,7 @@ public class GradeConnectorTest {
 
 	@Before
 	public void setUp() throws TransactionException {
-		
+
 		id = UUID.randomUUID();
 		studentId = UUID.randomUUID();
 		courseId = UUID.randomUUID();
@@ -102,7 +103,7 @@ public class GradeConnectorTest {
 	}
 
 	@Test
-	public void whenGetByIdIsOk() {
+	public void whenGetByIdStudentConnectorIsOk() {
 		boolean hasError = false;
 
 		try {
@@ -113,7 +114,7 @@ public class GradeConnectorTest {
 	}
 
 	@Test
-	public void whenGetByIdIsError() throws TransactionException {
+	public void whenGetByIdStudentConnectorIsError() throws TransactionException {
 
 		when(studentController.getById(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenThrow(new TransactionException(StudentEnum.CREATE_ERROR.getCode(),
@@ -122,5 +123,95 @@ public class GradeConnectorTest {
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 			gradeConnector.getById(schoolId.toString(), gradeApi.getStudentId(), false);
 		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenGetByIsOk() {
+		boolean hasError = false;
+		try {
+			gradeConnector.getById(schoolId.toString(), id.toString());
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByIdIsError() throws TransactionException {
+
+		when(gradeConnector.getById(Mockito.any(), Mockito.any())).thenThrow(
+				new TransactionException(GradeMessage.GET_ERROR.getCode(), GradeMessage.GET_ERROR.getDescription()));
+
+		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
+			gradeConnector.getById(schoolId.toString(), id.toString());
+		}).withMessage(GradeMessage.GET_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenGetBySchoolIsOk() {
+		boolean hasError = false;
+		try {
+			gradeConnector.getBySchool(schoolId.toString());
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetBySchoolIsEmpty() {
+		boolean hasEmpty = false;
+
+		when(gradeConnector.getBySchool(Mockito.any())).thenReturn(new ArrayList<>());
+		try {
+			if (gradeConnector.getBySchool(schoolId.toString()).isEmpty())
+				;
+		} catch (Exception e) {
+			assertThat(hasEmpty).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByStudentIsOk() {
+		boolean hasError = false;
+		try {
+			gradeConnector.getByStudent(schoolId.toString(), studentId.toString());
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByStudentIsEmpty() {
+		boolean hasEmpty = false;
+		when(gradeConnector.getByStudent(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+
+		try {
+			if (gradeConnector.getByStudent(schoolId.toString(), studentId.toString()).isEmpty())
+				;
+		} catch (Exception e) {
+			assertThat(hasEmpty).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByCourseIsOk() {
+		boolean hasError = false;
+		try {
+			gradeConnector.getByCourse(schoolId.toString(), courseId.toString());
+		} catch (Exception e) {
+			assertThat(hasError).isFalse();
+		}
+	}
+
+	@Test
+	public void whenGetByCourseIsEmpty() {
+		boolean hasEmpty = false;
+		when(gradeConnector.getByCourse(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+
+		try {
+			if (gradeConnector.getByCourse(courseId.toString(), courseId.toString()).isEmpty())
+				;
+		} catch (Exception e) {
+			assertThat(hasEmpty).isFalse();
+		}
 	}
 }

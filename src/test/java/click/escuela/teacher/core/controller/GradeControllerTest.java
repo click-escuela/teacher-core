@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -16,19 +18,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import click.escuela.teacher.core.api.GradeApi;
+import click.escuela.teacher.core.dto.GradeDTO;
 import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
 import click.escuela.teacher.core.exception.TransactionException;
@@ -54,6 +60,7 @@ public class GradeControllerTest {
 	private String schoolId;
 	private String studentId;
 	private String courseId;
+	private GradeDTO gradeDTO;
 	private static String EMPTY = "";
 
 	@Before
@@ -72,8 +79,16 @@ public class GradeControllerTest {
 		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").studentId(studentId)
 				.type(GradeType.HOMEWORK.toString()).courseId(courseId).schoolId(Integer.valueOf(schoolId)).number(10)
 				.build();
+		gradeDTO = GradeDTO.builder().id(id).name("Examen").subject("Matematica").type(GradeType.HOMEWORK.toString())
+				.number(10).build();
+		List<GradeDTO> gradesDTO = new ArrayList<>();
+		gradesDTO.add(gradeDTO);
 
 		doNothing().when(gradeService).create(Mockito.anyString(), Mockito.any());
+		Mockito.when(gradeService.getById(schoolId, id)).thenReturn(gradeDTO);
+		Mockito.when(gradeService.getBySchoolId(schoolId)).thenReturn(gradesDTO);
+		Mockito.when(gradeService.getByStudentId(schoolId, studentId)).thenReturn(gradesDTO);
+		Mockito.when(gradeService.getByCourseId(schoolId, courseId)).thenReturn(gradesDTO);
 
 	}
 
@@ -198,6 +213,107 @@ public class GradeControllerTest {
 				.andReturn();
 		String response = result.getResponse().getContentAsString();
 		assertThat(response).contains(GradeMessage.UPDATE_ERROR.getDescription());
+	}
+
+	@Test
+	public void getByIdIsOk() throws JsonProcessingException, Exception {
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.get("/school/{schoolId}/grade/{gradeId}", schoolId, id.toString())
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.ACCEPTED.value())).andReturn();
+		GradeDTO response = mapper.readValue(result.getResponse().getContentAsString(), GradeDTO.class);
+		assertThat(response).hasFieldOrPropertyWithValue("id", id.toString());
+	}
+
+	@Test
+	public void getByIdIsError() throws JsonProcessingException, Exception {
+		id = UUID.randomUUID().toString();
+		doThrow(new TransactionException(GradeMessage.GET_ERROR.getCode(), GradeMessage.GET_ERROR.getDescription()))
+				.when(gradeService).getById(schoolId, id);
+
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+				.get("/school/{schoolId}/grade/{gradeId}", schoolId, id).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest()).andReturn();
+		String response = result.getResponse().getContentAsString();
+		assertThat(response).contains(GradeMessage.GET_ERROR.getDescription());
+	}
+
+	@Test
+	public void getByIdSchoolIsOk() throws JsonProcessingException, Exception {
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.get("/school/{schoolId}/grade", schoolId)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.ACCEPTED.value())).andReturn();
+
+		TypeReference<List<GradeDTO>> typeReference = new TypeReference<List<GradeDTO>>() {
+		};
+		List<GradeDTO> results = mapper.readValue(result.getResponse().getContentAsString(), typeReference);
+		assertThat(results.get(0).getId()).contains(id.toString());
+	}
+
+	@Test
+	public void getByIdSchoolIsEmpty() throws JsonProcessingException, Exception {
+		schoolId = "6666";
+		Mockito.when(gradeService.getBySchoolId(schoolId)).thenReturn(new ArrayList<>());
+
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.get("/school/{schoolId}/grade", schoolId)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.ACCEPTED.value())).andReturn();
+		String response = result.getResponse().getContentAsString();
+		assertThat(response).contains("");
+	}
+
+	@Test
+	public void getByIdStudentIsOk() throws JsonProcessingException, Exception {
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.get("/school/{schoolId}/grade/student/{studentId}", schoolId, studentId)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.ACCEPTED.value())).andReturn();
+
+		TypeReference<List<GradeDTO>> typeReference = new TypeReference<List<GradeDTO>>() {
+		};
+		List<GradeDTO> results = mapper.readValue(result.getResponse().getContentAsString(), typeReference);
+		assertThat(results.get(0).getId()).contains(id.toString());
+	}
+
+	@Test
+	public void getByIdStudentIsEmpty() throws JsonProcessingException, Exception {
+		studentId = UUID.randomUUID().toString();
+		Mockito.when(gradeService.getByStudentId(schoolId, studentId)).thenReturn(new ArrayList<>());
+
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.get("/school/{schoolId}/grade/student/{studentId}", schoolId, studentId)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.ACCEPTED.value())).andReturn();
+		String response = result.getResponse().getContentAsString();
+		assertThat(response).contains("");
+	}
+
+	@Test
+	public void getByIdCourseIsOk() throws JsonProcessingException, Exception {
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.get("/school/{schoolId}/grade/course/{courseId}", schoolId, courseId)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.ACCEPTED.value())).andReturn();
+
+		TypeReference<List<GradeDTO>> typeReference = new TypeReference<List<GradeDTO>>() {
+		};
+		List<GradeDTO> results = mapper.readValue(result.getResponse().getContentAsString(), typeReference);
+		assertThat(results.get(0).getId()).contains(id.toString());
+	}
+
+	@Test
+	public void getByIdCourseIsEmpty() throws JsonProcessingException, Exception {
+		courseId = UUID.randomUUID().toString();
+		Mockito.when(gradeService.getByCourseId(schoolId, courseId)).thenReturn(new ArrayList<>());
+
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.get("/school/{schoolId}/grade/course/{courseId}", schoolId, courseId)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.ACCEPTED.value())).andReturn();
+		String response = result.getResponse().getContentAsString();
+		assertThat(response).contains("");
 	}
 
 	private String toJson(final Object obj) throws JsonProcessingException {
