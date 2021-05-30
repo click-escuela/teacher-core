@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -44,6 +45,7 @@ public class GradeApi {
 	@JsonProperty(value = "subject", required = true)
 	private String subject;
 
+	@ApiModelProperty(dataType = "enum", example = "EXAM,PRACTICAL_WORK,HOMEWORK")
 	@NotBlank(message = "Type cannot be empty")
 	@Size(max = 50, message = "Type must be less than 50 characters")
 	@JsonProperty(value = "type", required = true)
