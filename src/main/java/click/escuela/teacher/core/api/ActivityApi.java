@@ -35,15 +35,6 @@ public class ActivityApi {
 	@JsonProperty(value = "name", required = true)
 	private String name;
 
-	@NotNull(message = "School Id cannot be null")
-	@JsonProperty(value = "schoolId", required = true)
-	private Integer schoolId;
-
-	@NotBlank(message = "Course Id cannot be empty")
-	@Size(max = 50, message = "Course Id must be less than 50 characters")
-	@JsonProperty(value = "courseId", required = true)
-	private String courseId;
-
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@JsonProperty(value = "dueDate", required = true)
 	private LocalDate dueDate;
@@ -61,5 +52,14 @@ public class ActivityApi {
 	@Size(max = 50, message = "Description must be less than 50 characters")
 	@JsonProperty(value = "description", required = true)
 	private String description;
+
+	@NotNull(message = "School Id cannot be null")
+	@JsonProperty(value = "schoolId", required = true)
+	private Integer schoolId;
+
+	@NotBlank(message = "Course Id cannot be empty")
+	@Size(max = 50, message = "Course Id must be less than 50 characters")
+	@JsonProperty(value = "courseId", required = true)
+	private String courseId;
 
 }
