@@ -19,6 +19,7 @@ import click.escuela.teacher.core.api.ActivityApi;
 import click.escuela.teacher.core.connector.ActivityConnector;
 import click.escuela.teacher.core.enumerator.ActivityMessage;
 import click.escuela.teacher.core.enumerator.ActivityType;
+import click.escuela.teacher.core.exception.ActivityException;
 import click.escuela.teacher.core.exception.TransactionException;
 import click.escuela.teacher.core.service.impl.ActivityServiceImpl;
 
@@ -31,6 +32,7 @@ public class ActivityServiceTest {
 	private ActivityServiceImpl activityService = new ActivityServiceImpl();
 	private ActivityApi activityApi;
 	private UUID courseId;
+	private UUID id;
 	private Integer schoolId;
 
 	@Before
@@ -38,6 +40,7 @@ public class ActivityServiceTest {
 
 		courseId = UUID.randomUUID();
 		schoolId = 1234;
+		id = UUID.randomUUID();
 		activityApi = ActivityApi.builder().name("Historia de las catatumbas").subject("Historia")
 				.type(ActivityType.HOMEWORK.toString()).schoolId(schoolId).courseId(courseId.toString())
 				.dueDate(LocalDate.now()).description("Resolver todos los puntos").build();
@@ -53,14 +56,25 @@ public class ActivityServiceTest {
 
 	@Test
 	public void whenCreateIsError() throws TransactionException {
-
-		doThrow(new TransactionException(ActivityMessage.CREATE_ERROR.getCode(),
-				ActivityMessage.CREATE_ERROR.getDescription())).when(activityConnector).create(Mockito.anyString(),
+		doThrow(new ActivityException(ActivityMessage.CREATE_ERROR)).when(activityConnector).create(Mockito.anyString(),
 						Mockito.any());
-		
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 			activityService.create(schoolId.toString(), activityApi);
 		}).withMessage(ActivityMessage.CREATE_ERROR.getDescription());
+	}
+	
+	@Test
+	public void whenDeleteIsOk() throws ActivityException{
+		activityService.delete(schoolId.toString(),id.toString());
+		verify(activityConnector).delete(schoolId.toString(),id.toString());
+	}
+	
+	@Test
+	public void whenDeleteIsError() throws ActivityException{
+		doThrow(new ActivityException(ActivityMessage.GET_ERROR)).when(activityConnector).delete(Mockito.any(), Mockito.any());
+		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
+			activityService.delete("6666",UUID.randomUUID().toString());
+		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
 	}
 
 }

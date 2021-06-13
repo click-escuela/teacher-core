@@ -16,8 +16,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import click.escuela.teacher.core.api.ActivityApi;
+import click.escuela.teacher.core.enumerator.ActivityMessage;
 import click.escuela.teacher.core.enumerator.ActivityType;
-import click.escuela.teacher.core.enumerator.GradeMessage;
+import click.escuela.teacher.core.exception.ActivityException;
 import click.escuela.teacher.core.exception.TransactionException;
 import click.escuela.teacher.core.feign.ActivityController;
 
@@ -30,12 +31,13 @@ public class ActivityConnectorTest {
 	private ActivityConnector activityConnector = new ActivityConnector();
 	private ActivityApi activityApi;
 	private UUID courseId;
+	private UUID id;
 	private Integer schoolId;
 
 	@Before
 	public void setUp() throws TransactionException {
-
 		courseId = UUID.randomUUID();
+		id = UUID.randomUUID();
 		schoolId = 1234;
 		activityApi = ActivityApi.builder().name("Historia de las catatumbas").subject("Historia")
 				.type(ActivityType.HOMEWORK.toString()).schoolId(schoolId).courseId(courseId.toString())
@@ -45,20 +47,33 @@ public class ActivityConnectorTest {
 	}
 
 	@Test
-	public void whenCreateIsOk() throws TransactionException {
+	public void whenCreateIsOk() throws ActivityException {
 		activityConnector.create(schoolId.toString(), activityApi);
 		verify(activityController).create(schoolId.toString(), activityApi);
 	}
 
 	@Test
-	public void whenCreateIsError() throws TransactionException {
-
-		when(activityController.create(Mockito.any(), Mockito.any())).thenThrow(new TransactionException(
-				GradeMessage.CREATE_ERROR.getCode(), GradeMessage.CREATE_ERROR.getDescription()));
-
+	public void whenCreateIsError() throws ActivityException {
+		when(activityController.create(Mockito.any(), Mockito.any())).thenThrow(new ActivityException(
+				ActivityMessage.CREATE_ERROR));
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 			activityConnector.create(schoolId.toString(), activityApi);
-		}).withMessage(GradeMessage.CREATE_ERROR.getDescription());
+		}).withMessage(ActivityMessage.CREATE_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenDeleteIsOk() throws ActivityException{
+		activityConnector.delete(schoolId.toString(),id.toString());
+		verify(activityController).delete(schoolId.toString(),id.toString());
+	}
+	
+	@Test
+	public void whenDeleteIsError() throws ActivityException{
+		when(activityController.delete(Mockito.any(), Mockito.any())).thenThrow(new ActivityException(
+				ActivityMessage.GET_ERROR));
+		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
+			activityConnector.delete("6666",UUID.randomUUID().toString());
+		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
 	}
 
 }
