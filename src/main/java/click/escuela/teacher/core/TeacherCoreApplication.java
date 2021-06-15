@@ -12,5 +12,6 @@ public class TeacherCoreApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TeacherCoreApplication.class, args);
 	}
+	
 
 }

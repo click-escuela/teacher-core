@@ -11,7 +11,7 @@ import click.escuela.teacher.core.exception.TransactionException;
 @FeignClient(name = "students", url = "localhost:8090")
 public interface StudentController {
 
-	@GetMapping(value = "/click-escuela/student-core/school/{schoolId}/student/{studentId}")
+	@GetMapping(value = "/click-escuela/school-admin/school/{schoolId}/student/{studentId}")
 	public StudentDTO getById(@PathVariable("schoolId") String schoolId, @PathVariable("studentId") String studentId,
 			@RequestParam("fullDetail") Boolean fullDetail) throws TransactionException;
 
