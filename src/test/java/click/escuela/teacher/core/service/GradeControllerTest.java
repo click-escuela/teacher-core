@@ -5,6 +5,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -27,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import click.escuela.teacher.core.api.GradeApi;
+import click.escuela.teacher.core.dto.GradeDTO;
 import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
 import click.escuela.teacher.core.exception.TransactionException;
@@ -39,37 +42,49 @@ import click.escuela.teacher.core.service.impl.GradeServiceImpl;
 public class GradeControllerTest {
 
 	private MockMvc mockMvc;
-	
+
 	@InjectMocks
 	private GradeController gradeController;
-	
+
 	@Mock
 	private GradeServiceImpl gradeService;
-	
+
 	private ObjectMapper mapper;
 	private GradeApi gradeApi;
+	private String id;
 	private String schoolId;
 	private String studentId;
 	private String courseId;
+	private GradeDTO gradeDTO;
 	private static String EMPTY = "";
 	
 	@Before
-	public void setUp() throws TransactionException{
+	public void setUp() throws TransactionException {
 		mockMvc = MockMvcBuilders.standaloneSetup(gradeController).setControllerAdvice(new Handler()).build();
 		mapper = new ObjectMapper().findAndRegisterModules().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 				.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, false)
 				.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		
+
 		ReflectionTestUtils.setField(gradeController, "gradeService", gradeService);
-		
-		schoolId = UUID.randomUUID().toString();
+
+		id = UUID.randomUUID().toString();
+		schoolId = "1234";
 		studentId = UUID.randomUUID().toString();
 		courseId = UUID.randomUUID().toString();
-		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").type(GradeType.HOMEWORK.toString())
-				.number(10).studentId(studentId).courseId(courseId).build();
+		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").studentId(studentId)
+				.type(GradeType.HOMEWORK.toString()).courseId(courseId).schoolId(Integer.valueOf(schoolId)).number(10)
+				.build();
+		gradeDTO = GradeDTO.builder().id(id).name("Examen").subject("Matematica").type(GradeType.HOMEWORK.toString())
+				.number(10).build();
+		List<GradeDTO> gradesDTO = new ArrayList<>();
+		gradesDTO.add(gradeDTO);
 
 		doNothing().when(gradeService).create(Mockito.anyString(), Mockito.any());
-		
+		Mockito.when(gradeService.getById(schoolId, id)).thenReturn(gradeDTO);
+		Mockito.when(gradeService.getBySchoolId(schoolId)).thenReturn(gradesDTO);
+		Mockito.when(gradeService.getByStudentId(schoolId, studentId)).thenReturn(gradesDTO);
+		Mockito.when(gradeService.getByCourseId(schoolId, courseId)).thenReturn(gradesDTO);
+
 	}
 	
 	@Test
