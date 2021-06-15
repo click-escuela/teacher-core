@@ -80,10 +80,6 @@ public class GradeControllerTest {
 		gradesDTO.add(gradeDTO);
 
 		doNothing().when(gradeService).create(Mockito.anyString(), Mockito.any());
-		Mockito.when(gradeService.getById(schoolId, id)).thenReturn(gradeDTO);
-		Mockito.when(gradeService.getBySchoolId(schoolId)).thenReturn(gradesDTO);
-		Mockito.when(gradeService.getByStudentId(schoolId, studentId)).thenReturn(gradesDTO);
-		Mockito.when(gradeService.getByCourseId(schoolId, courseId)).thenReturn(gradesDTO);
 
 	}
 	
