@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -25,9 +26,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class GradeApi {
 	
+
 	@JsonProperty(value = "id", required = false)
 	private String id;
-	
+
 	@NotBlank(message = "Student cannot be empty")
 	@Size(max = 50, message = "Student must be less than 50 characters")
 	@JsonProperty(value = "studentId", required = true)
@@ -37,7 +39,7 @@ public class GradeApi {
 	@Size(max = 50, message = "Name must be less than 50 characters")
 	@JsonProperty(value = "name", required = true)
 	private String name;
-	
+  
 	@NotNull(message = "School cannot be null")
 	@JsonProperty(value = "schoolId", required = true)
 	private Integer schoolId;

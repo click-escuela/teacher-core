@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.dto.GradeDTO;
+
 import click.escuela.teacher.core.exception.TransactionException;
 import click.escuela.teacher.core.feign.GradeController;
 import click.escuela.teacher.core.feign.StudentController;
@@ -27,7 +28,6 @@ public class GradeConnector {
 	public void update(String schoolId, GradeApi gradeApi) throws TransactionException {
 		gradeController.update(schoolId, gradeApi);
 	}
-
 	public void getById(String schoolId, String studentId, Boolean fullDetail) throws TransactionException {
 		studentController.getById(schoolId, studentId, fullDetail);
 	}
@@ -47,5 +47,6 @@ public class GradeConnector {
 	public List<GradeDTO> getByCourse(String schoolId, String courseId) {
 		return gradeController.getByCourse(schoolId, courseId);
 	}
+
 
 }

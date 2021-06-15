@@ -8,6 +8,7 @@ public enum GradeMessage {
 	UPDATE_OK("UPDATE_OK", "Se modificó la nota correctamente"),
 	UPDATE_ERROR("UPDATE_ERROR", "No se pudo modificar la nota correctamente");
 
+
 	private String code;
 	private String description;
 

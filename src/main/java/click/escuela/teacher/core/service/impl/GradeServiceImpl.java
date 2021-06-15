@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.connector.GradeConnector;
 import click.escuela.teacher.core.dto.GradeDTO;
+
 import click.escuela.teacher.core.exception.TransactionException;
 
 @Service
@@ -20,7 +21,6 @@ public class GradeServiceImpl {
 		gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
 		gradeConnector.create(schoolId, gradeApi);
 	}
-
 	public void update(String schoolId, GradeApi gradeApi) throws TransactionException {
 		gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
 		gradeConnector.update(schoolId, gradeApi);
@@ -41,4 +41,5 @@ public class GradeServiceImpl {
 	public List<GradeDTO> getByCourseId(String schoolId, String courseId) {
 		return gradeConnector.getByCourse(schoolId, courseId);
 	}
+
 }
