@@ -43,7 +43,7 @@ public class ActivityController {
 	@PutMapping(value = "", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<ActivityMessage> update(@PathVariable("schoolId") String schoolId,
 			@RequestBody @Validated ActivityApi activityApi) throws ActivityException {
-		activityService.create(schoolId, activityApi);
+		activityService.update(schoolId, activityApi);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(ActivityMessage.UPDATE_OK);
 	}
 

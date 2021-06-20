@@ -54,25 +54,41 @@ public class ActivityConnectorTest {
 
 	@Test
 	public void whenCreateIsError() throws ActivityException {
-		when(activityController.create(Mockito.any(), Mockito.any())).thenThrow(new ActivityException(
-				ActivityMessage.CREATE_ERROR));
-		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
+		when(activityController.create(Mockito.any(), Mockito.any()))
+				.thenThrow(new ActivityException(ActivityMessage.CREATE_ERROR));
+		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
 			activityConnector.create(schoolId.toString(), activityApi);
 		}).withMessage(ActivityMessage.CREATE_ERROR.getDescription());
 	}
 
 	@Test
-	public void whenDeleteIsOk() throws ActivityException{
-		activityConnector.delete(schoolId.toString(),id.toString());
-		verify(activityController).delete(schoolId.toString(),id.toString());
+	public void whenUpdateIsOk() throws ActivityException {
+		activityApi.setId(id.toString());
+		activityConnector.update(schoolId.toString(), activityApi);
+		verify(activityController).update(schoolId.toString(), activityApi);
 	}
-	
+
 	@Test
-	public void whenDeleteIsError() throws ActivityException{
-		when(activityController.delete(Mockito.any(), Mockito.any())).thenThrow(new ActivityException(
-				ActivityMessage.GET_ERROR));
+	public void whenUpdateIsError() throws ActivityException {
+		when(activityController.update(Mockito.any(), Mockito.any()))
+				.thenThrow(new ActivityException(ActivityMessage.UPDATE_ERROR));
 		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
-			activityConnector.delete("6666",UUID.randomUUID().toString());
+			activityConnector.update(schoolId.toString(), activityApi);
+		}).withMessage(ActivityMessage.UPDATE_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenDeleteIsOk() throws ActivityException {
+		activityConnector.delete(schoolId.toString(), id.toString());
+		verify(activityController).delete(schoolId.toString(), id.toString());
+	}
+
+	@Test
+	public void whenDeleteIsError() throws ActivityException {
+		when(activityController.delete(Mockito.any(), Mockito.any()))
+				.thenThrow(new ActivityException(ActivityMessage.GET_ERROR));
+		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
+			activityConnector.delete("6666", UUID.randomUUID().toString());
 		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
 	}
 

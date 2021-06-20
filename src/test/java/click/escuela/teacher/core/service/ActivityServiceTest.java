@@ -57,23 +57,39 @@ public class ActivityServiceTest {
 	@Test
 	public void whenCreateIsError() throws TransactionException {
 		doThrow(new ActivityException(ActivityMessage.CREATE_ERROR)).when(activityConnector).create(Mockito.anyString(),
-						Mockito.any());
+				Mockito.any());
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 			activityService.create(schoolId.toString(), activityApi);
 		}).withMessage(ActivityMessage.CREATE_ERROR.getDescription());
 	}
-	
+
 	@Test
-	public void whenDeleteIsOk() throws ActivityException{
-		activityService.delete(schoolId.toString(),id.toString());
-		verify(activityConnector).delete(schoolId.toString(),id.toString());
+	public void whenUpdateIsOk() throws TransactionException {
+		activityService.update(schoolId.toString(), activityApi);
+		verify(activityConnector).update(schoolId.toString(), activityApi);
 	}
-	
+
 	@Test
-	public void whenDeleteIsError() throws ActivityException{
-		doThrow(new ActivityException(ActivityMessage.GET_ERROR)).when(activityConnector).delete(Mockito.any(), Mockito.any());
+	public void whenUpdateIsError() throws TransactionException {
+		doThrow(new ActivityException(ActivityMessage.UPDATE_ERROR)).when(activityConnector).update(Mockito.anyString(),
+				Mockito.any());
+		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
+			activityService.update(schoolId.toString(), activityApi);
+		}).withMessage(ActivityMessage.UPDATE_ERROR.getDescription());
+	}
+
+	@Test
+	public void whenDeleteIsOk() throws ActivityException {
+		activityService.delete(schoolId.toString(), id.toString());
+		verify(activityConnector).delete(schoolId.toString(), id.toString());
+	}
+
+	@Test
+	public void whenDeleteIsError() throws ActivityException {
+		doThrow(new ActivityException(ActivityMessage.GET_ERROR)).when(activityConnector).delete(Mockito.any(),
+				Mockito.any());
 		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
-			activityService.delete("6666",UUID.randomUUID().toString());
+			activityService.delete("6666", UUID.randomUUID().toString());
 		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
 	}
 
