@@ -17,6 +17,10 @@ public class ActivityConnector {
 		activityController.create(schoolId, activityApi);
 	}
 
+	public void update(String schoolId, ActivityApi activityApi) throws ActivityException {
+		activityController.update(schoolId, activityApi);
+	}
+
 	public void delete(String schoolId, String teacherId) throws ActivityException {
 		activityController.delete(schoolId, teacherId);
 	}
