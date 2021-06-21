@@ -13,7 +13,7 @@ import click.escuela.teacher.core.enumerator.ActivityMessage;
 import click.escuela.teacher.core.exception.ActivityException;
 import io.swagger.v3.oas.annotations.Parameter;
 
-@FeignClient(name = "activities", url = "localhost:8092")
+@FeignClient(name = "activities", url = "${provider.activity.url}")
 public interface ActivityController {
 
 	// ActivityController
