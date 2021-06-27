@@ -38,5 +38,6 @@ public class ActivityServiceImpl {
 
 	public List<ActivityDTO> getBySchool(String schoolId) {
 		return activityConnector.getBySchoolId(schoolId);
+
 	}
 }
