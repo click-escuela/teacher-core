@@ -3,9 +3,11 @@ package click.escuela.teacher.core.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,11 +26,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import click.escuela.teacher.core.api.ActivityApi;
+import click.escuela.teacher.core.dto.ActivityDTO;
 import click.escuela.teacher.core.enumerator.ActivityMessage;
 import click.escuela.teacher.core.enumerator.ActivityType;
 import click.escuela.teacher.core.enumerator.ActivityValidation;
@@ -55,6 +59,7 @@ public class ActivityControllerTest {
 	private String id;
 	private String schoolId;
 	private String courseId;
+	private String studentId;
 	private final static String URL = "/school/{schoolId}/activity";
 
 
@@ -69,9 +74,10 @@ public class ActivityControllerTest {
 		schoolId = "1234";
 		id = UUID.randomUUID().toString();
 		courseId = UUID.randomUUID().toString();
+		studentId = UUID.randomUUID().toString();
 		activityApi = ActivityApi.builder().name("Historia de las catatumbas").subject("Historia")
 				.type(ActivityType.HOMEWORK.toString()).schoolId(Integer.valueOf(schoolId))
-				.courseId(courseId.toString()).dueDate(LocalDate.now()).description("Resolver todos los puntos")
+				.courseId(courseId.toString()).studentId(studentId).dueDate(LocalDate.now()).description("Resolver todos los puntos")
 				.build();
 	}
 
@@ -150,6 +156,45 @@ public class ActivityControllerTest {
 		.contains(ActivityMessage.GET_ERROR.getDescription());
 	}
 
+	@Test
+	public void getBySchoolIdIsOk() throws JsonProcessingException, Exception {
+		assertThat(mapper.readValue(resultActivityApi(get(URL, schoolId)), new TypeReference<List<ActivityDTO>>() {
+		}).get(0).getId()).contains(id.toString());
+	}
+
+	@Test
+	public void getBySchoolIdIsEmpty() throws JsonProcessingException, Exception {
+		schoolId = "6666";
+		assertThat(mapper.readValue(resultActivityApi(get(URL, schoolId)), new TypeReference<List<ActivityDTO>>() {
+		})).isEmpty();
+	}
+	
+	@Test
+	public void getByCourseIdIsOk() throws JsonProcessingException, Exception {
+		assertThat(mapper.readValue(resultActivityApi(get(URL + "/course/{courseId}",  schoolId, courseId)), new TypeReference<List<ActivityDTO>>() {
+		}).get(0).getId()).contains(id.toString());
+	}
+
+	@Test
+	public void getByCourseIdIsEmpty() throws JsonProcessingException, Exception {
+		courseId = UUID.randomUUID().toString();
+		assertThat(mapper.readValue(resultActivityApi(get(URL + "/course/{courseId}",  schoolId, courseId)), new TypeReference<List<ActivityDTO>>() {
+		})).isEmpty();
+	}
+	
+	@Test
+	public void getByStudentIdIsOk() throws JsonProcessingException, Exception {
+		assertThat(mapper.readValue(resultActivityApi(get(URL + "/student/{studentId}",  schoolId, studentId)), new TypeReference<List<ActivityDTO>>() {
+		}).get(0).getId()).contains(id.toString());
+	}
+
+	@Test
+	public void getStudentIdIsEmpty() throws JsonProcessingException, Exception {
+		studentId = UUID.randomUUID().toString();
+		assertThat(mapper.readValue(resultActivityApi(get(URL + "/student/{studentId}",  schoolId, studentId)), new TypeReference<List<ActivityDTO>>() {
+		})).isEmpty();
+	}
+	
 	private String toJson(final Object obj) throws JsonProcessingException {
 		return mapper.writeValueAsString(obj);
 	}
