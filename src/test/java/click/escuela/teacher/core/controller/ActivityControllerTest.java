@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,7 +63,6 @@ public class ActivityControllerTest {
 	private String studentId;
 	private final static String URL = "/school/{schoolId}/activity";
 
-
 	@Before
 	public void setup() throws TransactionException {
 		mockMvc = MockMvcBuilders.standaloneSetup(activityController).setControllerAdvice(new Handler()).build();
@@ -77,8 +77,19 @@ public class ActivityControllerTest {
 		studentId = UUID.randomUUID().toString();
 		activityApi = ActivityApi.builder().name("Historia de las catatumbas").subject("Historia")
 				.type(ActivityType.HOMEWORK.toString()).schoolId(Integer.valueOf(schoolId))
-				.courseId(courseId.toString()).studentId(studentId).dueDate(LocalDate.now()).description("Resolver todos los puntos")
-				.build();
+				.courseId(courseId.toString()).studentId(studentId).dueDate(LocalDate.now())
+				.description("Resolver todos los puntos").build();
+		ActivityDTO activityDTO = ActivityDTO.builder().id(id).name("Historia de las catatumbas").subject("Historia")
+				.type(ActivityType.HOMEWORK.toString()).schoolId(Integer.valueOf(schoolId))
+				.courseId(UUID.fromString(courseId)).studentId(UUID.fromString(studentId)).dueDate(LocalDate.now())
+				.description("Resolver todos los puntos").build();
+		List<ActivityDTO> listDTO = new ArrayList<>();
+		listDTO.add(activityDTO);
+
+		Mockito.when(activityService.getBySchool(schoolId)).thenReturn(listDTO);
+		Mockito.when(activityService.getByCourse(schoolId, courseId)).thenReturn(listDTO);
+		Mockito.when(activityService.getByStudent(schoolId, studentId)).thenReturn(listDTO);
+
 	}
 
 	@Test
@@ -127,33 +138,35 @@ public class ActivityControllerTest {
 
 	@Test
 	public void whenCreateErrorService() throws JsonProcessingException, Exception {
-		doThrow(new ActivityException(ActivityMessage.CREATE_ERROR)).when(activityService).create(Mockito.any(),Mockito.any());
+		doThrow(new ActivityException(ActivityMessage.CREATE_ERROR)).when(activityService).create(Mockito.any(),
+				Mockito.any());
 		assertThat(resultActivityApi(post(URL, schoolId))).contains(ActivityMessage.CREATE_ERROR.getDescription());
 	}
-	
+
 	@Test
 	public void whenUpdateIsOk() throws JsonProcessingException, Exception {
 		activityApi.setId(id);
 		assertThat(resultActivityApi(put(URL, schoolId))).contains(ActivityMessage.UPDATE_OK.name());
 	}
-	
+
 	@Test
 	public void whenUpdateErrorService() throws JsonProcessingException, Exception {
-		doThrow(new ActivityException(ActivityMessage.UPDATE_ERROR)).when(activityService).update(Mockito.any(),Mockito.any());
+		doThrow(new ActivityException(ActivityMessage.UPDATE_ERROR)).when(activityService).update(Mockito.any(),
+				Mockito.any());
 		assertThat(resultActivityApi(put(URL, schoolId))).contains(ActivityMessage.UPDATE_ERROR.getDescription());
 	}
-	
+
 	@Test
 	public void whenDeleteIsOk() throws JsonProcessingException, Exception {
 		assertThat(resultActivityApi(delete(URL + "/{activityId}", schoolId, id)))
-		.contains(ActivityMessage.DELETE_OK.name());
+				.contains(ActivityMessage.DELETE_OK.name());
 	}
 
 	@Test
 	public void whenDeleteErrorService() throws JsonProcessingException, Exception {
-		doThrow(new ActivityException(ActivityMessage.GET_ERROR)).when(activityService).delete(schoolId,id);
+		doThrow(new ActivityException(ActivityMessage.GET_ERROR)).when(activityService).delete(schoolId, id);
 		assertThat(resultActivityApi(delete(URL + "/{activityId}", schoolId, id)))
-		.contains(ActivityMessage.GET_ERROR.getDescription());
+				.contains(ActivityMessage.GET_ERROR.getDescription());
 	}
 
 	@Test
@@ -168,37 +181,41 @@ public class ActivityControllerTest {
 		assertThat(mapper.readValue(resultActivityApi(get(URL, schoolId)), new TypeReference<List<ActivityDTO>>() {
 		})).isEmpty();
 	}
-	
+
 	@Test
 	public void getByCourseIdIsOk() throws JsonProcessingException, Exception {
-		assertThat(mapper.readValue(resultActivityApi(get(URL + "/course/{courseId}",  schoolId, courseId)), new TypeReference<List<ActivityDTO>>() {
-		}).get(0).getId()).contains(id.toString());
+		assertThat(mapper.readValue(resultActivityApi(get(URL + "/course/{courseId}", schoolId, courseId)),
+				new TypeReference<List<ActivityDTO>>() {
+				}).get(0).getId()).contains(id.toString());
 	}
 
 	@Test
 	public void getByCourseIdIsEmpty() throws JsonProcessingException, Exception {
 		courseId = UUID.randomUUID().toString();
-		assertThat(mapper.readValue(resultActivityApi(get(URL + "/course/{courseId}",  schoolId, courseId)), new TypeReference<List<ActivityDTO>>() {
-		})).isEmpty();
+		assertThat(mapper.readValue(resultActivityApi(get(URL + "/course/{courseId}", schoolId, courseId)),
+				new TypeReference<List<ActivityDTO>>() {
+				})).isEmpty();
 	}
-	
+
 	@Test
 	public void getByStudentIdIsOk() throws JsonProcessingException, Exception {
-		assertThat(mapper.readValue(resultActivityApi(get(URL + "/student/{studentId}",  schoolId, studentId)), new TypeReference<List<ActivityDTO>>() {
-		}).get(0).getId()).contains(id.toString());
+		assertThat(mapper.readValue(resultActivityApi(get(URL + "/student/{studentId}", schoolId, studentId)),
+				new TypeReference<List<ActivityDTO>>() {
+				}).get(0).getId()).contains(id.toString());
 	}
 
 	@Test
 	public void getStudentIdIsEmpty() throws JsonProcessingException, Exception {
 		studentId = UUID.randomUUID().toString();
-		assertThat(mapper.readValue(resultActivityApi(get(URL + "/student/{studentId}",  schoolId, studentId)), new TypeReference<List<ActivityDTO>>() {
-		})).isEmpty();
+		assertThat(mapper.readValue(resultActivityApi(get(URL + "/student/{studentId}", schoolId, studentId)),
+				new TypeReference<List<ActivityDTO>>() {
+				})).isEmpty();
 	}
-	
+
 	private String toJson(final Object obj) throws JsonProcessingException {
 		return mapper.writeValueAsString(obj);
 	}
-	
+
 	private String resultActivityApi(MockHttpServletRequestBuilder requestBuilder)
 			throws JsonProcessingException, Exception {
 		return mockMvc.perform(requestBuilder.contentType(MediaType.APPLICATION_JSON).content(toJson(activityApi)))
