@@ -98,6 +98,21 @@ public class ActivityConnectorTest {
 	}
 
 	@Test
+	public void whenGetByIdIsOk() throws ActivityException {
+		activityConnector.getById(schoolId.toString(),id.toString());
+		verify(activityController).getById(schoolId.toString(),id.toString());
+	}
+
+	@Test
+	public void whenGetByIsError() throws ActivityException {
+		when(activityController.getById(Mockito.any(), Mockito.any()))
+				.thenThrow(new ActivityException(ActivityMessage.GET_ERROR));
+		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
+			activityConnector.getById("6666", UUID.randomUUID().toString());
+		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
+	}
+
+	@Test
 	public void whenGetByCourseIdIsOk() {
 		activityConnector.getByCourseId(schoolId.toString(),courseId.toString());
 		verify(activityController).getByCourseId(schoolId.toString(),courseId.toString());

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -95,6 +96,21 @@ public class ActivityServiceTest {
 				Mockito.any());
 		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
 			activityService.delete("6666", UUID.randomUUID().toString());
+		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
+	}
+	
+	@Test
+	public void whenGetByIdIsOk() throws ActivityException {
+		activityService.getById(schoolId.toString(),id.toString());
+		verify(activityConnector).getById(schoolId.toString(),id.toString());
+	}
+
+	@Test
+	public void whenGetByIsError() throws ActivityException {
+		when(activityConnector.getById(Mockito.any(), Mockito.any()))
+				.thenThrow(new ActivityException(ActivityMessage.GET_ERROR));
+		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
+			activityService.getById("6666", UUID.randomUUID().toString());
 		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
 	}
 	

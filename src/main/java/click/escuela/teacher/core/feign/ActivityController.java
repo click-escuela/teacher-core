@@ -38,8 +38,13 @@ public interface ActivityController {
 			@PathVariable("studentId") String studentId);
 
 	@GetMapping(value = "/click-escuela/school/{schoolId}/activity/course/{courseId}")
-	public List<ActivityDTO> getByCourseId(@PathVariable("schoolId") String schoolId, @PathVariable("courseId") String courseId);
+	public List<ActivityDTO> getByCourseId(@PathVariable("schoolId") String schoolId,
+			@PathVariable("courseId") String courseId);
 
 	@GetMapping(value = "/click-escuela/school/{schoolId}/activity")
-	public List<ActivityDTO> getBySchoolId( @PathVariable("schoolId") String schoolId);
+	public List<ActivityDTO> getBySchoolId(@PathVariable("schoolId") String schoolId);
+
+	@GetMapping(value = "/click-escuela/school/{schoolId}/activity/{activityId}")
+	public ActivityDTO getById(@PathVariable("schoolId") String schoolId, @PathVariable("activityId") String activityId)
+			throws ActivityException;
 }
