@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+
 import java.util.UUID;
 
 import org.junit.Before;
@@ -60,6 +61,7 @@ public class GradeServiceTest {
 		boolean hasError = false;
 		try {
 			gradeService.create(schoolId.toString(), gradeApi);
+			
 		} catch (Exception e) {
 			hasError = true;
 		}
@@ -74,6 +76,7 @@ public class GradeServiceTest {
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 			gradeService.create(schoolId.toString(), gradeApi);
+
 		}).withMessage(GradeMessage.CREATE_ERROR.getDescription());
 	}
 
@@ -103,12 +106,14 @@ public class GradeServiceTest {
 	}
 
 	@Test
+
 	public void whenCreateIsErrorByStudent() throws TransactionException {
 		doThrow(new TransactionException(StudentEnum.CREATE_ERROR.getCode(), StudentEnum.CREATE_ERROR.getDescription()))
 				.when(gradeConnector).getById(Mockito.any(), Mockito.any(), Mockito.anyBoolean());
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 			gradeService.create(schoolId.toString(), gradeApi);
+
 		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
 
 	}

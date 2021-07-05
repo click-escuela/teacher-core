@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.dto.GradeDTO;
+
 import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.exception.TransactionException;
 
@@ -42,5 +43,6 @@ public interface GradeController {
 	@PutMapping(value = "/click-escuela/school/{schoolId}/grade")
 	public ResponseEntity<GradeMessage> update(@PathVariable("schoolId") String schoolId,
 			@RequestBody @Validated GradeApi gradeApi) throws TransactionException;
+
 
 }
