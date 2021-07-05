@@ -62,5 +62,9 @@ public class ActivityApi {
 	@Size(max = 50, message = "Course Id must be less than 50 characters")
 	@JsonProperty(value = "courseId", required = true)
 	private String courseId;
+	
+	@NotBlank(message = "Student Id cannot be empty")
+	@JsonProperty(value = "studentId", required = true)
+	private String studentId;
 
 }
