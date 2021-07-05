@@ -57,6 +57,7 @@ public class ActivityConnectorTest {
 		when(activityController.create(Mockito.any(), Mockito.any()))
 				.thenThrow(new ActivityException(ActivityMessage.CREATE_ERROR));
 		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
+
 			activityConnector.create(schoolId.toString(), activityApi);
 		}).withMessage(ActivityMessage.CREATE_ERROR.getDescription());
 	}
@@ -89,6 +90,7 @@ public class ActivityConnectorTest {
 				.thenThrow(new ActivityException(ActivityMessage.GET_ERROR));
 		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
 			activityConnector.delete("6666", UUID.randomUUID().toString());
+
 		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
 	}
 

@@ -28,6 +28,7 @@ public class GradeConnector {
 	public void update(String schoolId, GradeApi gradeApi) throws TransactionException {
 		gradeController.update(schoolId, gradeApi);
 	}
+
 	public void getById(String schoolId, String studentId, Boolean fullDetail) throws TransactionException {
 		studentController.getById(schoolId, studentId, fullDetail);
 	}

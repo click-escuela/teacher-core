@@ -23,5 +23,6 @@ public class ActivityServiceImpl {
 
 	public void delete(String schoolId, String activityId) throws ActivityException {
 		activityConnector.delete(schoolId, activityId);
+
 	}
 }

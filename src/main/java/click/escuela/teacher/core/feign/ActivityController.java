@@ -1,6 +1,7 @@
 package click.escuela.teacher.core.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ public interface ActivityController {
 
 	@DeleteMapping(value = "/click-escuela/school/{schoolId}/activity/{activityId}")
 	public String delete(@PathVariable("schoolId") String schoolId,
+
 			@Parameter(name = "Activity id", required = true) @PathVariable("activityId") String activityId)
 			throws ActivityException;
 }
