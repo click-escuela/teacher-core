@@ -8,6 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +37,15 @@ public class ActivityController {
 			@RequestBody @Validated ActivityApi activityApi) throws ActivityException {
 		activityService.create(schoolId, activityApi);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(ActivityMessage.CREATE_OK);
+	}
+
+	@Operation(summary = "Update Activity", responses = {
+			@ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json")) })
+	@PutMapping(value = "", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<ActivityMessage> update(@PathVariable("schoolId") String schoolId,
+			@RequestBody @Validated ActivityApi activityApi) throws ActivityException {
+		activityService.update(schoolId, activityApi);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(ActivityMessage.UPDATE_OK);
 	}
 
 	@Operation(summary = "Delete Activity", responses = {

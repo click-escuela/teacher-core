@@ -53,7 +53,6 @@ public class GradeServiceTest {
 
 		doNothing().when(gradeConnector).create(schoolId.toString(), gradeApi);
 
-
 		ReflectionTestUtils.setField(gradeService, "gradeConnector", gradeConnector);
 
 	}

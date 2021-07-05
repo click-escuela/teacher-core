@@ -16,8 +16,13 @@ public class ActivityServiceImpl {
 	public void create(String schoolId, ActivityApi activityApi) throws ActivityException {
 		activityConnector.create(schoolId, activityApi);
 	}
-	
-	public void delete(String schoolId, String teacherId) throws ActivityException {
-		activityConnector.delete(schoolId, teacherId);
+
+	public void update(String schoolId, ActivityApi activityApi) throws ActivityException {
+		activityConnector.update(schoolId, activityApi);
+	}
+
+	public void delete(String schoolId, String activityId) throws ActivityException {
+		activityConnector.delete(schoolId, activityId);
+
 	}
 }

@@ -17,7 +17,7 @@ import click.escuela.teacher.core.dto.GradeDTO;
 import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.exception.TransactionException;
 
-@FeignClient(name = "grades", url = "localhost:8091")
+@FeignClient(name = "grades", url ="${provider.grade.url}")
 public interface GradeController {
 
 	// GradeController
