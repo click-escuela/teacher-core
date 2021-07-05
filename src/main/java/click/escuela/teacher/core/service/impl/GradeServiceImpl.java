@@ -21,6 +21,7 @@ public class GradeServiceImpl {
 		gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
 		gradeConnector.create(schoolId, gradeApi);
 	}
+
 	public void update(String schoolId, GradeApi gradeApi) throws TransactionException {
 		gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
 		gradeConnector.update(schoolId, gradeApi);

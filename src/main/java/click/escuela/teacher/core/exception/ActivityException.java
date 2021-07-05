@@ -8,6 +8,7 @@ public class ActivityException extends TransactionException {
 
 	public ActivityException(ActivityMessage activityMessage) {
 		super(activityMessage.getCode(), activityMessage.getDescription());
+
 	}
 
 }

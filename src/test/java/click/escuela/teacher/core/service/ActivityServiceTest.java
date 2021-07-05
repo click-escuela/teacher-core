@@ -64,6 +64,7 @@ public class ActivityServiceTest {
 	public void whenCreateIsError() throws TransactionException {
 		doThrow(new ActivityException(ActivityMessage.CREATE_ERROR)).when(activityConnector).create(Mockito.anyString(),
 				Mockito.any());
+
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
 			activityService.create(schoolId.toString(), activityApi);
 		}).withMessage(ActivityMessage.CREATE_ERROR.getDescription());
@@ -96,6 +97,7 @@ public class ActivityServiceTest {
 				Mockito.any());
 		assertThatExceptionOfType(ActivityException.class).isThrownBy(() -> {
 			activityService.delete("6666", UUID.randomUUID().toString());
+
 		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
 	}
 	

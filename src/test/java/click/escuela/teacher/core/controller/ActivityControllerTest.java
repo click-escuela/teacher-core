@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -91,23 +93,27 @@ public class ActivityControllerTest {
 		Mockito.when(activityService.getByCourse(schoolId, courseId)).thenReturn(listDTO);
 		Mockito.when(activityService.getByStudent(schoolId, studentId)).thenReturn(listDTO);
 
+
 	}
 
 	@Test
 	public void whenCreateIsOk() throws JsonProcessingException, Exception {
 		assertThat(resultActivityApi(post(URL, schoolId))).contains(ActivityMessage.CREATE_OK.name());
+
 	}
 
 	@Test
 	public void whenCreateButNameEmpty() throws JsonProcessingException, Exception {
 		activityApi.setName(StringUtils.EMPTY);
 		assertThat(resultActivityApi(post(URL, schoolId))).contains(ActivityValidation.NAME_EMPTY.getDescription());
+
 	}
 
 	@Test
 	public void whenCreateButSubjectEmpty() throws JsonProcessingException, Exception {
 		activityApi.setSubject(StringUtils.EMPTY);
 		assertThat(resultActivityApi(post(URL, schoolId))).contains(ActivityValidation.SUBJECT_EMPTY.getDescription());
+
 	}
 
 	@Test
@@ -115,6 +121,7 @@ public class ActivityControllerTest {
 		activityApi.setDescription(StringUtils.EMPTY);
 		assertThat(resultActivityApi(post(URL, schoolId)))
 				.contains(ActivityValidation.DESCRIPTION_EMPTY.getDescription());
+
 	}
 
 	@Test
@@ -122,12 +129,14 @@ public class ActivityControllerTest {
 		activityApi.setCourseId(StringUtils.EMPTY);
 		assertThat(resultActivityApi(post(URL, schoolId)))
 				.contains(ActivityValidation.COURSE_ID_EMPTY.getDescription());
+
 	}
 
 	@Test
 	public void whenCreateButTypeEmpty() throws JsonProcessingException, Exception {
 		activityApi.setType(StringUtils.EMPTY);
 		String response = resultActivityApi(post(URL, schoolId));
+
 		assertThat(response).contains(ActivityValidation.TYPE_EMPTY.getDescription());
 	}
 
@@ -135,6 +144,7 @@ public class ActivityControllerTest {
 	public void whenCreateButSchoolNull() throws JsonProcessingException, Exception {
 		activityApi.setSchoolId(null);
 		assertThat(resultActivityApi(post(URL, schoolId))).contains(ActivityValidation.SCHOOL_ID_NULL.getDescription());
+
 	}
 
 	@Test
@@ -155,12 +165,14 @@ public class ActivityControllerTest {
 		doThrow(new ActivityException(ActivityMessage.UPDATE_ERROR)).when(activityService).update(Mockito.any(),
 				Mockito.any());
 		assertThat(resultActivityApi(put(URL, schoolId))).contains(ActivityMessage.UPDATE_ERROR.getDescription());
+
 	}
 
 	@Test
 	public void whenDeleteIsOk() throws JsonProcessingException, Exception {
 		assertThat(resultActivityApi(delete(URL + "/{activityId}", schoolId, id)))
 				.contains(ActivityMessage.DELETE_OK.name());
+
 	}
 
 	@Test
@@ -235,5 +247,6 @@ public class ActivityControllerTest {
 			throws JsonProcessingException, Exception {
 		return mockMvc.perform(requestBuilder.contentType(MediaType.APPLICATION_JSON).content(toJson(activityApi)))
 				.andReturn().getResponse().getContentAsString();
+
 	}
 }
