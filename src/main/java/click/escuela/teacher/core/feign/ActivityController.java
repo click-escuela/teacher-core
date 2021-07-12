@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import click.escuela.teacher.core.api.ActivityApi;
 import click.escuela.teacher.core.dto.ActivityDTO;
+
 import click.escuela.teacher.core.exception.ActivityException;
 import io.swagger.v3.oas.annotations.Parameter;
 
@@ -28,6 +29,7 @@ public interface ActivityController {
 	@PutMapping(value = "/click-escuela/school/{schoolId}/activity")
 	public String update(@PathVariable("schoolId") String schoolId, @RequestBody @Validated ActivityApi activityApi)
 			throws ActivityException;
+
 
 	@DeleteMapping(value = "/click-escuela/school/{schoolId}/activity/{activityId}")
 	public String delete(@PathVariable("schoolId") String schoolId,

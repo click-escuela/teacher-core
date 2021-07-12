@@ -152,6 +152,7 @@ public class ActivityControllerTest {
 		doThrow(new ActivityException(ActivityMessage.CREATE_ERROR)).when(activityService).create(Mockito.any(),
 				Mockito.any());
 		assertThat(resultActivityApi(post(URL, schoolId))).contains(ActivityMessage.CREATE_ERROR.getDescription());
+
 	}
 
 	@Test

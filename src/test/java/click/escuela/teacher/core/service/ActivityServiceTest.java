@@ -99,8 +99,9 @@ public class ActivityServiceTest {
 			activityService.delete("6666", UUID.randomUUID().toString());
 
 		}).withMessage(ActivityMessage.GET_ERROR.getDescription());
+
 	}
-	
+
 	@Test
 	public void whenGetByIdIsOk() throws ActivityException {
 		activityService.getById(schoolId.toString(),id.toString());

@@ -43,5 +43,6 @@ public class ActivityServiceImpl {
 
 	public ActivityDTO getById(String schoolId, String activityId) throws ActivityException {
 		return activityConnector.getById(schoolId, activityId);
+
 	}
 }
