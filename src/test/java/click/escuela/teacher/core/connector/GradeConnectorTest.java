@@ -19,19 +19,14 @@ import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.connector.GradeConnector;
 import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
-import click.escuela.teacher.core.enumerator.StudentEnum;
 import click.escuela.teacher.core.exception.TransactionException;
 import click.escuela.teacher.core.feign.GradeController;
-import click.escuela.teacher.core.feign.StudentController;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GradeConnectorTest {
 
 	@Mock
 	private GradeController gradeController;
-
-	@Mock
-	private StudentController studentController;
 
 	private GradeConnector gradeConnector = new GradeConnector();
 	private GradeApi gradeApi;
@@ -51,7 +46,6 @@ public class GradeConnectorTest {
 				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).number(10)
 				.build();
 
-		ReflectionTestUtils.setField(gradeConnector, "studentController", studentController);
 		ReflectionTestUtils.setField(gradeConnector, "gradeController", gradeController);
 	}
 
@@ -100,29 +94,6 @@ public class GradeConnectorTest {
 			gradeApi.setId(id.toString());
 			gradeConnector.update(schoolId.toString(), gradeApi);
 		}).withMessage(GradeMessage.UPDATE_ERROR.getDescription());
-	}
-
-	@Test
-	public void whenGetByIdStudentConnectorIsOk() {
-		boolean hasError = false;
-
-		try {
-			gradeConnector.getById(schoolId.toString(), gradeApi.getStudentId(), false);
-		} catch (Exception e) {
-			assertThat(hasError).isFalse();
-		}
-	}
-
-	@Test
-	public void whenGetByIdStudentConnectorIsError() throws TransactionException {
-
-		when(studentController.getById(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
-				.thenThrow(new TransactionException(StudentEnum.CREATE_ERROR.getCode(),
-						StudentEnum.CREATE_ERROR.getDescription()));
-
-		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
-			gradeConnector.getById(schoolId.toString(), gradeApi.getStudentId(), false);
-		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
 	}
 
 	@Test

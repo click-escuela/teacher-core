@@ -16,14 +16,17 @@ public class GradeServiceImpl {
 
 	@Autowired
 	private GradeConnector gradeConnector;
+	
+	@Autowired
+	private SchoolAdminServiceImpl schoolAdminService;
 
 	public void create(String schoolId, GradeApi gradeApi) throws TransactionException {
-		gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
+		schoolAdminService.getById(schoolId, gradeApi.getStudentId(), false);
 		gradeConnector.create(schoolId, gradeApi);
 	}
 
 	public void update(String schoolId, GradeApi gradeApi) throws TransactionException {
-		gradeConnector.getById(schoolId, gradeApi.getStudentId(), false);
+		schoolAdminService.getById(schoolId, gradeApi.getStudentId(), false);
 		gradeConnector.update(schoolId, gradeApi);
 	}
 	

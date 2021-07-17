@@ -22,7 +22,6 @@ import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.connector.GradeConnector;
 import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
-import click.escuela.teacher.core.enumerator.StudentEnum;
 import click.escuela.teacher.core.exception.TransactionException;
 import click.escuela.teacher.core.service.impl.GradeServiceImpl;
 
@@ -106,18 +105,7 @@ public class GradeServiceTest {
 		}).withMessage(GradeMessage.UPDATE_ERROR.getDescription());
 	}
 
-	@Test
-
-	public void whenCreateIsErrorByStudent() throws TransactionException {
-		doThrow(new TransactionException(StudentEnum.CREATE_ERROR.getCode(), StudentEnum.CREATE_ERROR.getDescription()))
-				.when(gradeConnector).getById(Mockito.any(), Mockito.any(), Mockito.anyBoolean());
-
-		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
-			gradeService.create(schoolId.toString(), gradeApi);
-
-		}).withMessage(StudentEnum.CREATE_ERROR.getDescription());
-
-	}
+	
 
 	@Test
 	public void whenGetByIsOk() {
