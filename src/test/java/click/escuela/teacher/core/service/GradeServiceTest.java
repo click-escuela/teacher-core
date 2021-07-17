@@ -24,6 +24,7 @@ import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
 import click.escuela.teacher.core.exception.TransactionException;
 import click.escuela.teacher.core.service.impl.GradeServiceImpl;
+import click.escuela.teacher.core.service.impl.SchoolAdminServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GradeServiceTest {
@@ -31,13 +32,15 @@ public class GradeServiceTest {
 	@Mock
 	private GradeConnector gradeConnector;
 
+	@Mock
+	private SchoolAdminServiceImpl schoolAdminService;
+
 	private GradeServiceImpl gradeService = new GradeServiceImpl();
 	private GradeApi gradeApi;
 	private UUID id;
 	private UUID studentId;
 	private UUID courseId;
 	private Integer schoolId;
-
 
 	@Before
 	public void setUp() throws TransactionException {
@@ -53,6 +56,7 @@ public class GradeServiceTest {
 		doNothing().when(gradeConnector).create(schoolId.toString(), gradeApi);
 
 		ReflectionTestUtils.setField(gradeService, "gradeConnector", gradeConnector);
+		ReflectionTestUtils.setField(gradeService, "schoolAdminService", schoolAdminService);
 
 	}
 
@@ -104,8 +108,6 @@ public class GradeServiceTest {
 			gradeService.update(schoolId.toString(), gradeApi);
 		}).withMessage(GradeMessage.UPDATE_ERROR.getDescription());
 	}
-
-	
 
 	@Test
 	public void whenGetByIsOk() {
