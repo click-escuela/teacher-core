@@ -8,9 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import click.escuela.teacher.core.enumerator.DocumentType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
 
 @Getter
 @Setter
+@Builder
 public class TeacherCourseStudentsDTO {
 
 	@JsonProperty(value = "id")
