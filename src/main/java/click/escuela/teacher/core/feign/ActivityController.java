@@ -18,37 +18,37 @@ import click.escuela.teacher.core.dto.ActivityDTO;
 import click.escuela.teacher.core.exception.ActivityException;
 import io.swagger.v3.oas.annotations.Parameter;
 
-@FeignClient(name = "activities", url = "${provider.activity.url}")
+@FeignClient(name = "activities")
 public interface ActivityController {
 
 	// ActivityController
-	@PostMapping(value = "/click-escuela/school/{schoolId}/activity")
+	@PostMapping(value = "/school/{schoolId}/activity")
 	public String create(@PathVariable("schoolId") String schoolId, @RequestBody @Validated ActivityApi activityApi)
 			throws ActivityException;
 
-	@PutMapping(value = "/click-escuela/school/{schoolId}/activity")
+	@PutMapping(value = "/school/{schoolId}/activity")
 	public String update(@PathVariable("schoolId") String schoolId, @RequestBody @Validated ActivityApi activityApi)
 			throws ActivityException;
 
 
-	@DeleteMapping(value = "/click-escuela/school/{schoolId}/activity/{activityId}")
+	@DeleteMapping(value = "/school/{schoolId}/activity/{activityId}")
 	public String delete(@PathVariable("schoolId") String schoolId,
 
 			@Parameter(name = "Activity id", required = true) @PathVariable("activityId") String activityId)
 			throws ActivityException;
 
-	@GetMapping(value = "/click-escuela/school/{schoolId}/activity/student/{studentId}")
+	@GetMapping(value = "/school/{schoolId}/activity/student/{studentId}")
 	public List<ActivityDTO> getByStudentId(@PathVariable("schoolId") String schoolId,
 			@PathVariable("studentId") String studentId);
 
-	@GetMapping(value = "/click-escuela/school/{schoolId}/activity/course/{courseId}")
+	@GetMapping(value = "/school/{schoolId}/activity/course/{courseId}")
 	public List<ActivityDTO> getByCourseId(@PathVariable("schoolId") String schoolId,
 			@PathVariable("courseId") String courseId);
 
-	@GetMapping(value = "/click-escuela/school/{schoolId}/activity")
+	@GetMapping(value = "/school/{schoolId}/activity")
 	public List<ActivityDTO> getBySchoolId(@PathVariable("schoolId") String schoolId);
 
-	@GetMapping(value = "/click-escuela/school/{schoolId}/activity/{activityId}")
+	@GetMapping(value = "/school/{schoolId}/activity/{activityId}")
 	public ActivityDTO getById(@PathVariable("schoolId") String schoolId, @PathVariable("activityId") String activityId)
 			throws ActivityException;
 }
