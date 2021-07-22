@@ -1,13 +1,13 @@
 package click.escuela.teacher.core.enumerator;
 
-public enum StudentEnum {
+public enum TeacherMessage {
 
-	GET_ERROR("GET_ERROR", "El estudiante que se busca no existe");
+	GET_ERROR("GET_ERROR", "No se pudo encontrar el profesor");
 
 	private String code;
 	private String description;
-	
-	StudentEnum(String code, String description) {
+
+	TeacherMessage(String code, String description) {
 		this.code = code;
 		this.description = description;
 	}
@@ -19,4 +19,5 @@ public enum StudentEnum {
 	public String getDescription() {
 		return description;
 	}
+
 }
