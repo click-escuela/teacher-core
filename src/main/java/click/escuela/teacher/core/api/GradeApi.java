@@ -26,9 +26,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class GradeApi {
 	
+
 	@JsonProperty(value = "id", required = false)
 	private String id;
-	
+
 	@NotBlank(message = "Student cannot be empty")
 	@Size(max = 50, message = "Student must be less than 50 characters")
 	@JsonProperty(value = "studentId", required = true)
