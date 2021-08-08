@@ -10,15 +10,14 @@ import click.escuela.teacher.core.dto.TeacherCourseStudentsDTO;
 import click.escuela.teacher.core.exception.TeacherException;
 import click.escuela.teacher.core.exception.TransactionException;
 
-@FeignClient(name = "students", url = "${provider.student.url}")
+@FeignClient(name = "school-admin")
 public interface SchoolAdminController {
-	public final String URL = "/click-escuela/school-admin/school/{schoolId}";
 
-	@GetMapping(value = URL + "/student/{studentId}")
+	@GetMapping(value = "/school/{schoolId}/student/{studentId}")
 	public StudentDTO getById(@PathVariable("schoolId") String schoolId, @PathVariable("studentId") String studentId,
 			@RequestParam("fullDetail") Boolean fullDetail) throws TransactionException;
 
-	@GetMapping(value = URL + "/teacher/{teacherId}/courses")
+	@GetMapping(value = "/school/{schoolId}/teacher/{teacherId}/courses")
 	public TeacherCourseStudentsDTO getCoursesAndStudents(@PathVariable("schoolId") String schoolId,
 			@PathVariable("teacherId") String teacherId) throws TeacherException;
 
