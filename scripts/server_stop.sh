@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo pkill -f 'java -jar teacher.core-0.0.1-SNAPSHOT.jar'
+sudo kill -9 $(sudo lsof -t -i:8081) 
