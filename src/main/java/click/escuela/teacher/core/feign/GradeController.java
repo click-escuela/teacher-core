@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.dto.CourseDTO;
+import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.GradeDTO;
 
 import click.escuela.teacher.core.enumerator.GradeMessage;
@@ -46,6 +47,6 @@ public interface GradeController {
 			@RequestBody @Validated GradeApi gradeApi) throws TransactionException;
 
 	@PutMapping(value = "/school/{schoolId}/grade/courses")
-	public List<CourseDTO> getCoursesWithGrades(@PathVariable("schoolId") String schoolId,
-			@RequestBody @Validated List<CourseDTO> courses);
+	public List<CourseStudentsShortDTO> getCoursesWithGrades(@PathVariable("schoolId") String schoolId,
+			@RequestBody @Validated List<CourseStudentsShortDTO> courses);
 }

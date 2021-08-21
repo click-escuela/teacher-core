@@ -28,6 +28,4 @@ public class GradeDTO {
 	@JsonProperty(value = "number")
 	private Integer number;
 	
-	@JsonProperty(value = "studentId")
-	private String studentId;
 }

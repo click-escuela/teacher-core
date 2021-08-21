@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import click.escuela.teacher.core.connector.SchoolAdminConnector;
-import click.escuela.teacher.core.dto.CourseDTO;
+import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.StudentDTO;
 import click.escuela.teacher.core.dto.TeacherCourseStudentsDTO;
 import click.escuela.teacher.core.exception.TeacherException;
@@ -29,8 +29,8 @@ public class SchoolAdminServiceImpl {
 		return schoolAdminConnector.getById(schoolId, studentId, fullDetail);
 	}
 	
-	public List<CourseDTO> getCoursesWithGrades(String schoolId, String teacherId) throws TeacherException {
-		List<CourseDTO> courses = schoolAdminConnector.getCourses(schoolId, teacherId);
+	public List<CourseStudentsShortDTO> getCoursesWithGrades(String schoolId, String teacherId) throws TeacherException {
+		List<CourseStudentsShortDTO> courses = schoolAdminConnector.getCourses(schoolId, teacherId);
 		if(!courses.isEmpty()) {
 			courses = gradeServiceImpl.getCoursesWithGrades(schoolId, courses); 
 		}

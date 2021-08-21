@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import click.escuela.teacher.core.dto.CourseDTO;
+import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.TeacherCourseStudentsDTO;
 import click.escuela.teacher.core.exception.TeacherException;
 import click.escuela.teacher.core.service.impl.SchoolAdminServiceImpl;
@@ -37,9 +37,9 @@ public class TeacherController {
 	}
 	
 	@Operation(summary = "Get courses with grades", responses = {
-			@ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CourseDTO.class))) })
+			@ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CourseStudentsShortDTO.class))) })
 	@GetMapping(value = "/teacher/{teacherId}/coursesList", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<CourseDTO>> getCoursesWithGrades(@PathVariable("schoolId") String schoolId,
+	public ResponseEntity<List<CourseStudentsShortDTO>> getCoursesWithGrades(@PathVariable("schoolId") String schoolId,
 			@PathVariable("teacherId") String teacherId) throws TeacherException{
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(schoolAdminServiceImpl.getCoursesWithGrades(schoolId,teacherId));
 	}

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.connector.GradeConnector;
-import click.escuela.teacher.core.dto.CourseDTO;
+import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.GradeDTO;
 import click.escuela.teacher.core.exception.TransactionException;
 
@@ -46,7 +46,7 @@ public class GradeServiceImpl {
 		return gradeConnector.getByCourse(schoolId, courseId);
 	}
 
-	public List<CourseDTO> getCoursesWithGrades(String schoolId,List<CourseDTO> courses) {
+	public List<CourseStudentsShortDTO> getCoursesWithGrades(String schoolId,List<CourseStudentsShortDTO> courses) {
 		return gradeConnector.getCoursesWithGrades(schoolId, courses);
 	}
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import click.escuela.teacher.core.dto.CourseDTO;
+import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.StudentDTO;
 import click.escuela.teacher.core.dto.TeacherCourseStudentsDTO;
 import click.escuela.teacher.core.exception.TeacherException;
@@ -25,7 +25,7 @@ public interface SchoolAdminController {
 			@PathVariable("teacherId") String teacherId) throws TeacherException;
 
 	@GetMapping(value = "/school/{schoolId}/teacher/{teacherId}/coursesList")
-	public List<CourseDTO> getCourses(@PathVariable("schoolId") String schoolId,
+	public List<CourseStudentsShortDTO> getCourses(@PathVariable("schoolId") String schoolId,
 			@PathVariable("teacherId") String teacherId) throws TeacherException;
 
 }

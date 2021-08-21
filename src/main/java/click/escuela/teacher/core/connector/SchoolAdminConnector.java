@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import click.escuela.teacher.core.dto.CourseDTO;
+import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.StudentDTO;
 import click.escuela.teacher.core.dto.TeacherCourseStudentsDTO;
 import click.escuela.teacher.core.exception.TeacherException;
@@ -26,7 +26,7 @@ public class SchoolAdminConnector {
 		return schoolAdminController.getById(schoolId, studentId, fullDetail);
 	}
 
-	public List<CourseDTO> getCourses(String schoolId, String teacherId) throws TeacherException {
+	public List<CourseStudentsShortDTO> getCourses(String schoolId, String teacherId) throws TeacherException {
 		return schoolAdminController.getCourses(schoolId, teacherId);
 	}
 }

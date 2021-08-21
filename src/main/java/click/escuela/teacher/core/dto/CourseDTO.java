@@ -1,15 +1,17 @@
 package click.escuela.teacher.core.dto;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CourseDTO {
 
@@ -24,8 +26,5 @@ public class CourseDTO {
 	
 	@JsonProperty(value = "countStudent")
 	private Integer countStudent;
-	
-	@JsonProperty(value = "grades")
-	private List<GradeDTO> grades;
 
 }
