@@ -27,4 +27,5 @@ public class GradeDTO {
 
 	@JsonProperty(value = "number")
 	private Integer number;
+	
 }
