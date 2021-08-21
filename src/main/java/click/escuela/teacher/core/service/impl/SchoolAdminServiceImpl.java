@@ -1,9 +1,13 @@
 package click.escuela.teacher.core.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import click.escuela.teacher.core.connector.SchoolAdminConnector;
+import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
+import click.escuela.teacher.core.dto.StudentDTO;
 import click.escuela.teacher.core.dto.TeacherCourseStudentsDTO;
 import click.escuela.teacher.core.exception.TeacherException;
 import click.escuela.teacher.core.exception.TransactionException;
@@ -13,13 +17,24 @@ public class SchoolAdminServiceImpl {
 
 	@Autowired
 	private SchoolAdminConnector schoolAdminConnector;
+	
+	@Autowired
+	private GradeServiceImpl gradeServiceImpl;
 
 	public TeacherCourseStudentsDTO getCoursesAndStudents(String schoolId, String teacherId) throws TeacherException {
 		return schoolAdminConnector.getCoursesAndStudents(schoolId, teacherId);
 	}
 
-	public void getById(String schoolId, String studentId, Boolean fullDetail) throws TransactionException {
-		schoolAdminConnector.getById(schoolId, studentId, fullDetail);
+	public StudentDTO getById(String schoolId, String studentId, Boolean fullDetail) throws TransactionException {
+		return schoolAdminConnector.getById(schoolId, studentId, fullDetail);
+	}
+	
+	public List<CourseStudentsShortDTO> getCoursesWithGrades(String schoolId, String teacherId) throws TeacherException {
+		List<CourseStudentsShortDTO> courses = schoolAdminConnector.getCourses(schoolId, teacherId);
+		if(!courses.isEmpty()) {
+			courses = gradeServiceImpl.getCoursesWithGrades(schoolId, courses); 
+		}
+		return courses;
 	}
 
 }
