@@ -5,4 +5,3 @@ chmod +x /home/ec2-user/server/teacher-core/server_start.sh
 chmod +x /home/ec2-user/server/teacher-core/server_stop.sh
 chmod +x /home/ec2-user/server/teacher-core/server_clear.sh
 chmod +x /home/ec2-user/server/teacher-core/fix_privileges.sh
-chmod +x /home/ec2-user/server/teacher-core/teacher-service.pid
