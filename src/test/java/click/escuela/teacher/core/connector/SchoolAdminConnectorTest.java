@@ -69,4 +69,18 @@ public class SchoolAdminConnectorTest {
 		}).withMessage(StudentEnum.GET_ERROR.getDescription());
 	}
 
+	@Test
+	public void whenGetCoursesIsOk() throws TeacherException {
+		schoolAdminConnector.getCourses(schoolId, teacherId);
+		verify(schoolAdminController).getCourses(schoolId, teacherId);
+	}
+
+	@Test
+	public void whenGetCoursesByTeacherIdIsError() throws TeacherException {
+		when(schoolAdminController.getCourses(schoolId, teacherId))
+				.thenThrow(new TeacherException(TeacherMessage.GET_ERROR));
+		assertThatExceptionOfType(TeacherException.class).isThrownBy(() -> {
+			schoolAdminConnector.getCourses(schoolId, teacherId);
+		}).withMessage(TeacherMessage.GET_ERROR.getDescription());
+	}
 }
