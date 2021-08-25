@@ -2,9 +2,11 @@ package click.escuela.teacher.core.connector;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -17,8 +19,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import click.escuela.teacher.core.api.GradeApi;
 import click.escuela.teacher.core.connector.GradeConnector;
+import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
+import click.escuela.teacher.core.exception.TeacherException;
 import click.escuela.teacher.core.exception.TransactionException;
 import click.escuela.teacher.core.feign.GradeController;
 
@@ -34,6 +38,7 @@ public class GradeConnectorTest {
 	private UUID studentId;
 	private UUID courseId;
 	private Integer schoolId;
+	private List<CourseStudentsShortDTO> coursesStudents = new ArrayList<>();
 
 	@Before
 	public void setUp() throws TransactionException {
@@ -184,5 +189,11 @@ public class GradeConnectorTest {
 		} catch (Exception e) {
 			assertThat(hasEmpty).isFalse();
 		}
+	}
+	
+	@Test
+	public void whengetCoursesWithGradesIsOk() throws TeacherException {
+		gradeConnector.getCoursesWithGrades(schoolId.toString(), coursesStudents);
+		verify(gradeController).getCoursesWithGrades(schoolId.toString(), coursesStudents);
 	}
 }
