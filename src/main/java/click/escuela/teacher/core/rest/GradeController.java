@@ -70,7 +70,6 @@ public class GradeController {
 	@Operation(summary = "Create grade", responses = {
 			@ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json")) })
 	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-
 	public ResponseEntity<GradeMessage> create(@PathVariable("schoolId") String schoolId,
 			@RequestBody @Validated GradeCreateApi gradeApi) throws TransactionException {
 		gradeService.create(schoolId, gradeApi);
