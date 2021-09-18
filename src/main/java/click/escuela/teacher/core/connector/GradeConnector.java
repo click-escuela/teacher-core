@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import click.escuela.teacher.core.api.GradeApi;
+import click.escuela.teacher.core.api.GradeCreateApi;
 import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.GradeDTO;
 
@@ -18,7 +19,7 @@ public class GradeConnector {
 	@Autowired
 	private GradeController gradeController;
 
-	public void create(String schoolId, GradeApi gradeApi) throws TransactionException {
+	public void create(String schoolId, GradeCreateApi gradeApi) throws TransactionException {
 		gradeController.create(schoolId, gradeApi);
 	}
 
