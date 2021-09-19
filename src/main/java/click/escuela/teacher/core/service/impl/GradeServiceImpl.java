@@ -1,6 +1,7 @@
 package click.escuela.teacher.core.service.impl;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,17 @@ public class GradeServiceImpl {
 	
 	@Autowired
 	private SchoolAdminServiceImpl schoolAdminService;
+	
 
 	public void create(String schoolId, GradeCreateApi gradeApi) throws TransactionException {
+		Logger logger = Logger.getLogger(GradeServiceImpl.class.getName());
+		
 		gradeApi.getStudentId().stream().forEach(student -> {
 			try {
 				schoolAdminService.getById(schoolId, student, false);
-			} catch (TransactionException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				String message = "Unexpected Exception in processing!";
+			    logger.log(null, message, e);
 			}
 		});
 		
