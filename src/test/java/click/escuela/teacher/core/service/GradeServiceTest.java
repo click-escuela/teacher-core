@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.Logger;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import click.escuela.teacher.core.api.GradeApi;
@@ -35,6 +36,9 @@ public class GradeServiceTest {
 
 	@Mock
 	private SchoolAdminServiceImpl schoolAdminService;
+	
+	@Mock
+	private Logger logger;
 
 	private GradeServiceImpl gradeService = new GradeServiceImpl();
 	private GradeApi gradeApi;
@@ -66,6 +70,7 @@ public class GradeServiceTest {
 
 		ReflectionTestUtils.setField(gradeService, "gradeConnector", gradeConnector);
 		ReflectionTestUtils.setField(gradeService, "schoolAdminService", schoolAdminService);
+		ReflectionTestUtils.setField(gradeService, "logger", logger);
 
 	}
 

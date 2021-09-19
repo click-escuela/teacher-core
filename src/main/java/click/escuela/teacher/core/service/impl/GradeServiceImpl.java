@@ -1,8 +1,9 @@
 package click.escuela.teacher.core.service.impl;
 
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +23,15 @@ public class GradeServiceImpl {
 	@Autowired
 	private SchoolAdminServiceImpl schoolAdminService;
 	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public void create(String schoolId, GradeCreateApi gradeApi) throws TransactionException {
-		Logger logger = Logger.getLogger(GradeServiceImpl.class.getName());
 		
 		gradeApi.getStudentId().stream().forEach(student -> {
 			try {
 				schoolAdminService.getById(schoolId, student, false);
-			} catch (Exception e) {
-				String message = "Unexpected Exception in processing!";
-			    logger.log(null, message, e);
+			} catch (TransactionException e) {
+			    logger.error(e.getMessage());
 			}
 		});
 		
