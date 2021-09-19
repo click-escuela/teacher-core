@@ -2,10 +2,13 @@ package click.escuela.teacher.core.service.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import click.escuela.teacher.core.api.GradeApi;
+import click.escuela.teacher.core.api.GradeCreateApi;
 import click.escuela.teacher.core.connector.GradeConnector;
 import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.GradeDTO;
@@ -19,9 +22,19 @@ public class GradeServiceImpl {
 	
 	@Autowired
 	private SchoolAdminServiceImpl schoolAdminService;
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void create(String schoolId, GradeApi gradeApi) throws TransactionException {
-		schoolAdminService.getById(schoolId, gradeApi.getStudentId(), false);
+	public void create(String schoolId, GradeCreateApi gradeApi) throws TransactionException {
+		
+		gradeApi.getStudentId().stream().forEach(student -> {
+			try {
+				schoolAdminService.getById(schoolId, student, false);
+			} catch (TransactionException e) {
+			    logger.error(e.getMessage());
+			}
+		});
+		
 		gradeConnector.create(schoolId, gradeApi);
 	}
 
