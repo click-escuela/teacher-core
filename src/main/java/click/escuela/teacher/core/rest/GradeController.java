@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import click.escuela.teacher.core.api.GradeApi;
+import click.escuela.teacher.core.api.GradeCreateApi;
 import click.escuela.teacher.core.dto.GradeDTO;
 
 import click.escuela.teacher.core.enumerator.GradeMessage;
@@ -69,9 +70,8 @@ public class GradeController {
 	@Operation(summary = "Create grade", responses = {
 			@ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json")) })
 	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-
 	public ResponseEntity<GradeMessage> create(@PathVariable("schoolId") String schoolId,
-			@RequestBody @Validated GradeApi gradeApi) throws TransactionException {
+			@RequestBody @Validated GradeCreateApi gradeApi) throws TransactionException {
 		gradeService.create(schoolId, gradeApi);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(GradeMessage.CREATE_OK);
 	}

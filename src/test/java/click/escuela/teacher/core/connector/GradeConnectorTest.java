@@ -18,6 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import click.escuela.teacher.core.api.GradeApi;
+import click.escuela.teacher.core.api.GradeCreateApi;
 import click.escuela.teacher.core.connector.GradeConnector;
 import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.enumerator.GradeMessage;
@@ -34,6 +35,7 @@ public class GradeConnectorTest {
 
 	private GradeConnector gradeConnector = new GradeConnector();
 	private GradeApi gradeApi;
+	private GradeCreateApi gradeCreateApi;
 	private UUID id;
 	private UUID studentId;
 	private UUID courseId;
@@ -50,6 +52,13 @@ public class GradeConnectorTest {
 		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").studentId(studentId.toString())
 				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).number(10)
 				.build();
+		List<String> studentsIds = new ArrayList<>();
+		studentsIds.add(studentId.toString());
+		List<Integer> notes = new ArrayList<>();
+		notes.add(10);
+		gradeCreateApi = GradeCreateApi.builder().name("Examen").subject("Matematica").studentId(studentsIds)
+				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).number(notes)
+				.build();
 
 		ReflectionTestUtils.setField(gradeConnector, "gradeController", gradeController);
 	}
@@ -59,7 +68,7 @@ public class GradeConnectorTest {
 		boolean hasError = false;
 
 		try {
-			gradeConnector.create(schoolId.toString(), gradeApi);
+			gradeConnector.create(schoolId.toString(), gradeCreateApi);
 		} catch (Exception e) {
 			assertThat(hasError).isFalse();
 		}
@@ -72,7 +81,7 @@ public class GradeConnectorTest {
 				GradeMessage.CREATE_ERROR.getCode(), GradeMessage.CREATE_ERROR.getDescription()));
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
-			gradeConnector.create(schoolId.toString(), gradeApi);
+			gradeConnector.create(schoolId.toString(), gradeCreateApi);
 		}).withMessage(GradeMessage.CREATE_ERROR.getDescription());
 	}
 

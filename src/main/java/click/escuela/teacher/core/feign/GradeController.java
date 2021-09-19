@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import click.escuela.teacher.core.api.GradeApi;
-import click.escuela.teacher.core.dto.CourseDTO;
+import click.escuela.teacher.core.api.GradeCreateApi;
 import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.GradeDTO;
 
@@ -40,7 +40,7 @@ public interface GradeController {
 
 	@PostMapping(value = "/school/{schoolId}/grade")
 	public ResponseEntity<GradeMessage> create(@PathVariable("schoolId") String schoolId,
-			@RequestBody @Validated GradeApi gradeApi) throws TransactionException;
+			@RequestBody @Validated GradeCreateApi gradeApi) throws TransactionException;
 
 	@PutMapping(value = "/school/{schoolId}/grade")
 	public ResponseEntity<GradeMessage> update(@PathVariable("schoolId") String schoolId,

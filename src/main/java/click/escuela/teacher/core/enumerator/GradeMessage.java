@@ -5,6 +5,7 @@ public enum GradeMessage {
 	CREATE_OK("CREATE_OK", "Se creó la nota correctamente"),
 	CREATE_ERROR("CREATE_ERROR", "No se pudo crear la nota correctamente"),
 	GET_ERROR("GET_ERROR", "La nota que se busca no existe"),
+	STUDENT_ERROR("STUDENT_ERROR", "Verifique los IDS de los estudiantes: "),
 	UPDATE_OK("UPDATE_OK", "Se modificó la nota correctamente"),
 	UPDATE_ERROR("UPDATE_ERROR", "No se pudo modificar la nota correctamente");
 
