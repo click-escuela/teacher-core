@@ -7,7 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import click.escuela.teacher.core.api.GradeApi;
+import click.escuela.teacher.core.api.GradeCreateApi;
 import click.escuela.teacher.core.connector.GradeConnector;
 import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.enumerator.GradeType;
@@ -41,6 +42,7 @@ public class GradeServiceTest {
 	private UUID studentId;
 	private UUID courseId;
 	private Integer schoolId;
+	private GradeCreateApi gradeCreateApi;
 
 	@Before
 	public void setUp() throws TransactionException {
@@ -52,8 +54,15 @@ public class GradeServiceTest {
 		gradeApi = GradeApi.builder().name("Examen").subject("Matematica").studentId(studentId.toString())
 				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).number(10)
 				.build();
+		List<String> studentsIds = new ArrayList<>();
+		studentsIds.add(studentId.toString());
+		List<Integer> notes = new ArrayList<>();
+		notes.add(10);
+		gradeCreateApi = GradeCreateApi.builder().name("Examen").subject("Matematica").studentId(studentsIds)
+				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).number(notes)
+				.build();
 
-		doNothing().when(gradeConnector).create(schoolId.toString(), gradeApi);
+		doNothing().when(gradeConnector).create(schoolId.toString(), gradeCreateApi);
 
 		ReflectionTestUtils.setField(gradeService, "gradeConnector", gradeConnector);
 		ReflectionTestUtils.setField(gradeService, "schoolAdminService", schoolAdminService);
@@ -64,7 +73,7 @@ public class GradeServiceTest {
 	public void whenCreateIsOk() {
 		boolean hasError = false;
 		try {
-			gradeService.create(schoolId.toString(), gradeApi);
+			gradeService.create(schoolId.toString(), gradeCreateApi);
 
 		} catch (Exception e) {
 			hasError = true;
@@ -79,7 +88,7 @@ public class GradeServiceTest {
 						Mockito.any());
 
 		assertThatExceptionOfType(TransactionException.class).isThrownBy(() -> {
-			gradeService.create(schoolId.toString(), gradeApi);
+			gradeService.create(schoolId.toString(), gradeCreateApi);
 
 		}).withMessage(GradeMessage.CREATE_ERROR.getDescription());
 	}
