@@ -1,6 +1,5 @@
 package click.escuela.teacher.core.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import click.escuela.teacher.core.api.GradeCreateApi;
 import click.escuela.teacher.core.connector.GradeConnector;
 import click.escuela.teacher.core.dto.CourseStudentsShortDTO;
 import click.escuela.teacher.core.dto.GradeDTO;
-import click.escuela.teacher.core.enumerator.GradeMessage;
 import click.escuela.teacher.core.exception.TransactionException;
 
 @Service
