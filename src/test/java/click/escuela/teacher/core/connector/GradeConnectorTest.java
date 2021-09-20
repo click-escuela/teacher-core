@@ -56,8 +56,8 @@ public class GradeConnectorTest {
 		studentsIds.add(studentId.toString());
 		List<Integer> notes = new ArrayList<>();
 		notes.add(10);
-		gradeCreateApi = GradeCreateApi.builder().name("Examen").subject("Matematica").studentId(studentsIds)
-				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).number(notes)
+		gradeCreateApi = GradeCreateApi.builder().name("Examen").subject("Matematica").studentIds(studentsIds)
+				.type(GradeType.HOMEWORK.toString()).courseId(courseId.toString()).schoolId(schoolId).numbers(notes)
 				.build();
 
 		ReflectionTestUtils.setField(gradeConnector, "gradeController", gradeController);
