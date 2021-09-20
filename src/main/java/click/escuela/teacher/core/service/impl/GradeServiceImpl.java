@@ -27,7 +27,7 @@ public class GradeServiceImpl {
 
 	public void create(String schoolId, GradeCreateApi gradeApi) throws TransactionException {
 		
-		gradeApi.getStudentId().stream().forEach(student -> {
+		gradeApi.getStudentIds().stream().forEach(student -> {
 			try {
 				schoolAdminService.getById(schoolId, student, false);
 			} catch (TransactionException e) {
